@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router";
-import Assignments from "./Assignments";
+import Assignments from "@/app/(Kambaz)/Courses/[cid]/Assignments/page";
 import Modules from "@/app/(Kambaz)/Courses/[cid]/Modules/page";
 import Home from "@/app/(Kambaz)/Courses/[cid]/Home/page";
 
