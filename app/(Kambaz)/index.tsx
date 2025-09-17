@@ -4,8 +4,9 @@ import Modules from "@/app/(Kambaz)/Courses/[cid]/Modules/page";
 import Home from "@/app/(Kambaz)/Courses/[cid]/Home/page";
 
 export default async function Kambaz({params,}:
-                                         { params: Promise<{ cid: string }>; }) {
-    await params;
+                                         { params: Promise<{ cid: string, aid: string }>; }) {
+    const {cid} = await params;
+    const {aid} = await params;
     return (
         <div id="wd-kambaz">
             <h1>Kambaz</h1>
