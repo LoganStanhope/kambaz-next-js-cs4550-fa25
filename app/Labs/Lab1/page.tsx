@@ -3,6 +3,7 @@ export default function Lab1() {
     return (
         <div id={"wd-lab1"}>
             <h2>Lab 1</h2>
+            <p> Logan Stanhope CS4550.11597.202610 </p>
             <h3>HTML Examples</h3>
             {/* -------------------- HEADING TAGS ---------------------*/}
             <div id="wd-h-tag">

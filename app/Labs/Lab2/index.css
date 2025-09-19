@@ -1,0 +1,17 @@
+/*p {*/
+/*    background-color: red;*/
+/*    color: white;*/
+/*}*/
+
+/*p {*/
+/*    background-color: green;*/
+/*    color: white;*/
+/*}*/
+
+/* Dot looks for the associated classname */
+.wd-fg-color-black { color: black; }
+.wd-fg-color-white { color: white; }
+.wd-fg-color-blue { color: #7070ff; }
+.wd-fg-color-red { color: #ff7070; }
+.wd-fg-color-green { color: green; }
+
