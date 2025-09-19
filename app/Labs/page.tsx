@@ -5,6 +5,7 @@ export default function Labs() {
         <div id="wd-labs">
             <h1>Labs</h1>
             <ul>
+                <p> Logan Stanhope CS4550.11597.202610 </p>
                 <li>
                     <Link href="/Labs/Lab1" id="wd-lab1-link">
                         Lab 1: HTML Examples </Link></li>
