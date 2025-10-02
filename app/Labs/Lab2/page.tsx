@@ -42,7 +42,7 @@ export default function Lab2() {
                         Selectors can be combined to refer elements in particular
                         places in the document
                         <p className="wd-selector-3">
-                            This paragraph's red background is referenced as
+                            This paragraph&apos;s red background is referenced as
                             <br />
                             .selector-2 .selector3<br />
                             meaning the descendant of some ancestor.<br />
