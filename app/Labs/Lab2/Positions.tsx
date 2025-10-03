@@ -23,6 +23,7 @@ export default function Positions() {
                     </div>
                 </div>
             </div>
+            {/* ---------------------------------------------------------------*/}
             <div id="wd-css-position-absolute">
                 <h2>Absolute position</h2>
                 <div className="wd-pos-relative">
@@ -42,6 +43,7 @@ export default function Positions() {
                 </div>
                 <br/><br/><br/><br/><br/><br/><br/>
             </div>
+            {/* ---------------------------------------------------------------*/}
             <div id="wd-css-position-fixed">
                 <h2>Fixed position</h2>
                 Checkout the blue square that says &quot;Fixed position&quot; stuck all the way on the right and half

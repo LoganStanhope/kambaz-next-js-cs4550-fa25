@@ -5,6 +5,7 @@ import Home from "@/app/(Kambaz)/Courses/[cid]/Home/page";
 import Quizzes from "@/app/(Kambaz)/Courses/[cid]/Quizzes/page";
 import Zoom from "@/app/(Kambaz)/Courses/[cid]/Zoom/page";
 import Piazza from "@/app/(Kambaz)/Courses/[cid]/Piazza/page";
+import PeopleTable from "@/app/(Kambaz)/Courses/[cid]/People/page";
 
 export default async function Kambaz({params,}:
                                          { params: Promise<{ cid: string, aid: string }>; }) {
@@ -21,6 +22,7 @@ export default async function Kambaz({params,}:
                 <Route path="Piazza" element={<Piazza/>}/>
                 <Route path="Zoom" element={<Zoom/>}/>
                 <Route path="Quizzes" element={<Quizzes/>}/>
+                <Route path="People" element={<PeopleTable />} />
             </Routes>
         </div>
     );

@@ -1,0 +1,7 @@
+.wd-lesson.active {
+    background-color: lightgray;
+}
+
+.wd-lesson.active:hover {
+    background-color: lightgray;
+}

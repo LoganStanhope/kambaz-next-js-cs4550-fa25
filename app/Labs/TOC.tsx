@@ -1,24 +1,40 @@
+'use client';
+import Nav from "react-bootstrap/Nav";
 import Link from "next/link";
 
 export default function TOC() {
     return (
-        <ul>
-            <li>
-                <Link href="/Labs" id="wd-lab1-link">
-                    Home </Link></li>
-            <li>
-                <Link href="/Labs/Lab1" id="wd-lab1-link">
-                    Lab 1 </Link></li>
-            <li>
-                <Link href="/Labs/Lab2" id="wd-lab2-link">
-                    Lab 2 </Link></li>
-            <li>
-                <Link href="/Labs/Lab3" id="wd-lab3-link">
-                    Lab 3 </Link></li>
-            <li>
-                <Link href="/" id="wd-lab3-link">
-                    Kambaz </Link></li>
-        </ul>
-
+        <Nav variant="pills" className="d-flex flex-row justify-content-center">
+            <Nav.Item>
+                <Link href="/Labs" passHref legacyBehavior>
+                    <Nav.Link>Labs</Nav.Link>
+                </Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Link href="/Labs/Lab1" passHref legacyBehavior>
+                    <Nav.Link>Lab 1</Nav.Link>
+                </Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Link href="/Labs/Lab2" passHref legacyBehavior>
+                    <Nav.Link>Lab 2</Nav.Link>
+                </Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Link href="/Labs/Lab3" passHref legacyBehavior>
+                    <Nav.Link>Lab 3</Nav.Link>
+                </Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Link href="/" passHref legacyBehavior>
+                    <Nav.Link>Kambaz</Nav.Link>
+                </Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Nav.Link href="https://github.com/LoganStanhope" target="_blank" rel="noopener noreferrer">
+                    My GitHub
+                </Nav.Link>
+            </Nav.Item>
+        </Nav>
     );
 }

@@ -1,4 +1,5 @@
 import "./index.css"
+
 export default function BackgroundColors() {
     return (
         <div id="wd-css-background-colors">

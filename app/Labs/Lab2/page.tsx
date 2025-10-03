@@ -1,11 +1,30 @@
 import Dimensions from "@/app/Labs/Lab2/Dimensions";
 import ForegroundColors from "@/app/Labs/Lab2/ForegroundColors";
 import Positions from "@/app/Labs/Lab2/Positions";
+import BackgroundColors from "@/app/Labs/Lab2/BackgroundColors";
+import Borders from "@/app/Labs/Lab2/Borders";
+import Padding from "@/app/Labs/Lab2/Padding";
+import Margins from "@/app/Labs/Lab2/Margins";
+import Corners from "@/app/Labs/Lab2/Corners";
+import Zindex from "@/app/Labs/Lab2/Zindex";
+import Float from "@/app/Labs/Lab2/Float";
+import GridLayout from "@/app/Labs/Lab2/GridLayout";
+import Flex from "@/app/Labs/Lab2/Flex";
+import ReactIconsSampler from "@/app/Labs/Lab2/ReactIconSampler";
+import {Container} from "react-bootstrap";
+import BootstrapGrids from "@/app/Labs/Lab2/BootstrapGrids";
+import ScreenSizeLabel from "@/app/Labs/Lab2/ScreenSizeLabel";
+import BootstrapTables from "@/app/Labs/Lab2/BootstrapTables";
+import BootstrapLists from "@/app/Labs/Lab2/BootstrapLists";
+import BootstrapForms from "@/app/Labs/Lab2/BootstrapForms";
+import BootstrapNavigation from "@/app/Labs/Lab2/BootstrapNavigation";
+
 
 export default function Lab2() {
     return (
-        <div id="wd-lab2">
+        <Container>
             <h2>Lab 2 - Cascading Style Sheets</h2>
+            <p> Logan Stanhope CS4550.11597.202610 </p>
             <h3>Styling with the STYLE attribute</h3>
             <p>
                 Style attribute allows configuring look and feel
@@ -56,8 +75,24 @@ export default function Lab2() {
                 </div>
             </div>
             <ForegroundColors/>
-            <Positions/>
+            <BackgroundColors/>
+            <Borders/>
+            <Padding/>
+            <Margins/>
+            <Corners/>
             <Dimensions/>
-        </div>
+            <Positions/>
+            <Zindex/>
+            <Float/>
+            <GridLayout/>
+            <Flex/>
+            <ReactIconsSampler/>
+            <BootstrapGrids/>
+            <ScreenSizeLabel/>
+            <BootstrapTables/>
+            <BootstrapLists/>
+            <BootstrapForms/>
+            <BootstrapNavigation/>
+        </Container>
     );
 }

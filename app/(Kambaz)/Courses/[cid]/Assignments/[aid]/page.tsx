@@ -1,119 +1,147 @@
+'use client';
+import '../styles.css';
+import {Button, Col, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, InputGroup, Row} from "react-bootstrap";
+import {AiFillCalendar} from "react-icons/ai";
+import InputGroupText from "react-bootstrap/InputGroupText";
+import React from "react";
+
 export default async function AssignmentEditor({params,}:
                                                    { params: Promise<{ aid: string }>; }) {
     const {aid} = await params;
     const decodedAid = decodeURIComponent(aid);
     return (
-        <form id="wd-assignments-editor">
-            <h3>Assignment Name</h3>
-            <input id="wd-name" value={decodedAid}/><br/><br/>
-            <textarea id="wd-description" cols={40} rows={10}>
-        The assignment is available online Submit a link to the landing page of your Web application running on Vercel.
-                The landing page should include that following: Your fill name and section Links to each of the lab
-                assignments Link to the Kambaz application Links to all relevant source code repositories. The Kambaz
-                application should include a link to navigate back to the landing page.
-      </textarea>
-            <br/>
-            <table>
-                <tbody>
-                <tr>
-                    <td>
-                        <label htmlFor="wd-points">Points </label>
-                        <input id="wd-points" value={100}/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label htmlFor="wd-points">Assignment Group </label>
-                        <select id="wd-group">
-                            <option value="QUIZZES">QUIZZES</option>
-                            <option selected value="ASSIGNMENTS">
-                                ASSIGNMENTS
-                            </option>
-                            <option value="EXAMS">EXAMS</option>
-                            <option value="PROJECTS">PROJECTS</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label htmlFor="wd-points">Display Grade as </label>
-                        <select id="wd-group">
-                            <option value="LETTER">Letter</option>
-                            <option selected value="Percentage">
-                                Percentage
-                            </option>
-                        </select>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label htmlFor="wd-points">Submission Type </label>
-                        <select id="wd-group">
-                            <option value="INPERSON">In-person</option>
-                            <option selected value="Online">
-                                Online
-                            </option>
-                        </select>
-                    </td>
-                </tr>
-                <br/>
-                <tr>
-                    <td>
-                        <label htmlFor="wd-entry-types">Online Entry Option </label><br/>
-                        <input type="checkbox" name="check-online-entry" id="wd-text-entry"/>
-                        <label htmlFor="wd-text-entry">Text Entry</label><br/>
-                        <input type="checkbox" name="check-website-url" id="wd-website-url"/>
-                        <label htmlFor="wd-website-url">Website URL</label><br/>
-                        <input type="checkbox" name="check-media-recordings" id="wd-media-recordings"/>
-                        <label htmlFor="wd-media-recordings">Media Recording</label><br/>
-                        <input type="checkbox" name="check-student-annotation" id="wd-student-annotation"/>
-                        <label htmlFor="wd-student-annotation">Student Annotation</label><br/>
-                        <input type="checkbox" name="check-file-upload" id="wd-file-upload"/>
-                        <label htmlFor="wd-file-upload">File Uploads</label><br/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label htmlFor="wd-assign-to">Assign to </label><br/>
-                        <input id="wd-assign-to" defaultValue={"Everyone"}/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label htmlFor="wd-due-date">Due </label><br/>
-                        <input value="2025-01-21" type="date" id="wd-due-date"/>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <label htmlFor="wd-available-from">Available from </label><br/>
-                        <input value="2025-01-01" type="date" id="wd-available-from"/>
-                    </td>
-                    <td>
-                        <label htmlFor="wd-available-until">Until </label><br/>
-                        <input value="2025-01-31" type="date" id="wd-available-until"/>
-                    </td>
-                </tr>
-
-                </tbody>
-                {/* wd-points, wd-group, wd-display-grade-as, wd-submission-type, wd-text-entry, wd-website-url
-                		wd-media-recordings, wd-student-annotation,wd-file-upload, wd-assign-to, wd-due-date,
-                		wd-available-from, wd-available-until, wd-name */}
-            </table>
-            <br/>
+        <div id="wd-assignments-editor" className="d-flex flex-column justify-content-end">
             <div>
-                <button type="submit" id="wd-save">
-                    Save
-                </button>
-                <button type="button" id="wd-cancel">
-                    Cancel
-                </button>
+                <h3>Assignment Name</h3>
+                <FormGroup as={Row} className="mb-3" controlId="email1">
+                    <Col sm={20}>
+                        <FormControl type="email" value={decodedAid}/>
+                    </Col>
+                </FormGroup> <br/>
+                <div className="assignment-text border rounded p-3">
+                    <p>This assignment is <span style={{color: 'red'}}>available online</span></p>
+                    <p>Submit a link to the landing page of your Web application running on Vercel.</p>
+                    The landing page should include the following:<br/><br/>
+                    <ul>
+                        <li>Your full name and section</li>
+                        <li>Links to each of the lab assignments</li>
+                        <li>Link to the Kanbas application</li>
+                        <li>Links to all relevant source code repositories</li>
+                    </ul>
+                    The Kanbas application should include a link to navigate back to the landing page.<br/><br/>
+                </div>
+                <br/>
             </div>
-        </form>
+
+            <div>
+                <FormGroup as={Row} className="mb-3">
+                    <FormLabel column sm={2}>
+                        Points
+                    </FormLabel>
+                    <Col sm={10}>
+                        <FormControl defaultValue="100"/>
+                    </Col>
+                </FormGroup>
+            </div>
+            <div>
+                <FormGroup as={Row} className="mb-3">
+                    <FormLabel column sm={2}>
+                        Assignment Group
+                    </FormLabel>
+                    <Col sm={10}>
+                        <FormSelect>
+                            <option selected>ASSIGNMENTS</option>
+                            <option value="1">QUIZZES</option>
+                            <option value="2">EXAMS</option>
+                            <option value="3">LABS</option>
+                        </FormSelect>
+                    </Col>
+                </FormGroup>
+            </div>
+            <div>
+                <FormGroup as={Row} className="mb-3">
+                    <FormLabel column sm={2}>
+                        Display Grade as
+                    </FormLabel>
+                    <Col sm={10}>
+                        <FormSelect>
+                            <option selected>Percentage</option>
+                            <option value="1">Letter</option>
+                        </FormSelect>
+                    </Col>
+                </FormGroup>
+            </div>
+            <div>
+                <FormGroup as={Row} className="mb-3">
+                    <FormLabel column sm={2}>
+                        Submission Type
+                    </FormLabel>
+                    <Col className="assignment-text border rounded p-3" sm={10}>
+                        <FormSelect>
+                            <option selected>Online</option>
+                            <option value="1">In-person</option>
+                        </FormSelect><br/>
+                        <b>Online Entry Options</b><br/>
+                        <FormCheck type="checkbox" checked={false}
+                                   label="Text Entry"/>
+                        <FormCheck type="checkbox" checked={true}
+                                   label="Website URL"/>
+                        <FormCheck type="checkbox" checked={false}
+                                   label="Media Recordings"/>
+                        <FormCheck type="checkbox" checked={false}
+                                   label="Submission Annotation"/>
+                        <FormCheck type="checkbox" checked={false}
+                                   label="File Uploads"/>
+                    </Col>
+                </FormGroup>
+            </div>
+            <div>
+                <FormGroup as={Row} className="mb-3">
+                    <FormLabel column sm={2}>
+                        Assign
+                    </FormLabel>
+                    <Col className="assignment-text border rounded p-3" sm={10}>
+                        <b>Assign to</b><br/>
+                        <FormGroup as={Row} className="mb-3" controlId="assignTo">
+                            <Col sm={20}>
+                                <FormControl value="Everyone"/>
+                            </Col>
+                        </FormGroup>
+                        <b>Due</b><br/>
+                        <InputGroup className="mb-3">
+                            <FormControl type="date" size="lg" placeholder="May 12, 2024, 11:59PM" id="wd-search"/>
+                            <InputGroupText>
+                                <AiFillCalendar/>
+                            </InputGroupText>
+                        </InputGroup>
+                        <div className="d-flex flex-row">
+                            <div className="d-flex flex-column">
+                                <b>Available from</b>
+                                <InputGroup className="mb-3">
+                                    <FormControl  type="date" size="lg" placeholder="May 6, 2024, 11:59PM" id="wd-search"/>
+                                    <InputGroupText>
+                                        <AiFillCalendar/>
+                                    </InputGroupText>
+                                </InputGroup>
+                            </div>
+                            <div className="d-flex flex-column">
+                                <b>Until</b>
+                                <InputGroup className="mb-3">
+                                    <FormControl  type="date" size="lg" placeholder="" id="wd-search"/>
+                                    <InputGroupText>
+                                        <AiFillCalendar/>
+                                    </InputGroupText>
+                                </InputGroup>
+                            </div>
+                        </div>
+                    </Col>
+                </FormGroup><br/>
+                <hr/>
+            </div>
+            <div className="d-flex gap-2 f" style={{width: "120px"}}>
+                <Button variant="secondary" size="lg"> Cancel </Button>
+                <Button variant="danger" size="lg">Save </Button>
+            </div>
+        </div>
     );
 }
