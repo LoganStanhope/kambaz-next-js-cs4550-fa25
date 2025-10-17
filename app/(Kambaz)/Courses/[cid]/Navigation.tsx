@@ -11,6 +11,7 @@ export default function CourseNavigation({cid}: { cid: string }) {
         <ListGroup id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
             {links.map((link) => (
                 <ListGroupItem as={Link}
+                               key={link}
                                className={pathname.includes(link)?
                                    "list-group-item border-0 border border-0 text-black" :
                                    "list-group-item border-0 border border-0 text-danger"}

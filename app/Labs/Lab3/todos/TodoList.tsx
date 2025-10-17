@@ -6,7 +6,7 @@ export default function TodoList() {
     return (
         <>
             <h3>Todo List</h3>
-            <ListGroup>
+            <ListGroup key={"todoList"}>
                 {todos.map(todo => {
                     return (<TodoItem todo={todo}/>);
                 })}

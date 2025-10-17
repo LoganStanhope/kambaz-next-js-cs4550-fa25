@@ -11,7 +11,7 @@ import Link from "next/link";
 import {assignments} from "../../../Database";
 import {useParams} from "next/navigation";
 
-export default async function Assignments() {
+export default function Assignments() {
     const {cid} = useParams();
     return (
         <div id="wd-assignments">
@@ -41,25 +41,26 @@ export default async function Assignments() {
                         <AssignmentEditButton/>
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
-                        {assignments.filter((module: any) => module.course === cid)
-                            .map((assignment: any) => (
-                            <ListGroupItem as={Link}
-                                           href={`/Courses/${assignment.course}/Assignments/${assignment._id}`}
-                                           className="wd-lesson p-4 ps-1 flex-column">
-                                <AssignmentIconButton/>
-                                <div className="d-flex flex-column flex-grow-1">
-                                    <h3>{assignment._id}</h3>
-                                    <div className="d-flex flex-row justify-content-between">
-                                        <p className="mb-0">
-                                            <span style={{color: 'red'}}> Multiple Modules </span>
-                                            | <b>Not available until </b> May 6 at 12:00am |<br/>
-                                            <b> Due </b> May 13 at 11:59pm | 100pts
-                                        </p>
-                                        <LessonControlButtons/>
+                        {assignments.filter((module) => module.course === cid)
+                            .map((assignment) => (
+                                <ListGroupItem as={Link}
+                                               key={assignment._id}
+                                               href={`/Courses/${assignment.course}/Assignments/${assignment._id}`}
+                                               className="wd-lesson p-4 ps-1 flex-column">
+                                    <AssignmentIconButton/>
+                                    <div className="d-flex flex-column flex-grow-1">
+                                        <h3>{assignment._id}</h3>
+                                        <div className="d-flex flex-row justify-content-between">
+                                            <p className="mb-0">
+                                                <span style={{color: 'red'}}> Multiple Modules </span>
+                                                | <b>Not available until </b> May 6 at 12:00am |<br/>
+                                                <b> Due </b> May 13 at 11:59pm | 100pts
+                                            </p>
+                                            <LessonControlButtons/>
+                                        </div>
                                     </div>
-                                </div>
-                            </ListGroupItem>
-                        ))}
+                                </ListGroupItem>
+                            ))}
                     </ListGroup>
                 </ListGroupItem>
             </ListGroup>

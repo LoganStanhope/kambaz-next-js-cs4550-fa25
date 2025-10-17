@@ -8,9 +8,9 @@ import {useParams} from "next/navigation";
 import {assignments} from "../../../../Database";
 import Link from "next/link";
 
-export default async function AssignmentEditor() {
+export default function AssignmentEditor() {
     const {cid, aid} = useParams();
-    const assignment = assignments.find((a: any) => a.course === cid && a._id === aid);
+    const assignment = assignments.find((a) => a.course === cid && a._id === aid);
     return (
         <div id="wd-assignments-editor" className="d-flex flex-column justify-content-end">
             <div>
