@@ -19,17 +19,17 @@ export default function Modules() {
                 {modules
                     .filter((module) => module.course === cid)
                     .map((module) => (
-                        <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
-                            <div key={module.course} className="wd-title p-3 ps-2 bg-secondary">
-                                <BsGripVertical className="me-2 fs-3"/> {module.name}
-                                <ModuleControlButtons/>
+                        <ListGroupItem key={module._id} className="wd-module p-0 mb-5 fs-5 border-gray">
+                            <div key={module._id} className="wd-title p-3 ps-2 bg-secondary">
+                                <BsGripVertical key={module._id} className="me-2 fs-3"/> {module.name}
+                                <ModuleControlButtons key={module._id}/>
                             </div>
                             {module.lessons && (
-                                <ListGroup key={module.course} className="wd-lessons rounded-0">
+                                <ListGroup key={module._id} className="wd-lessons rounded-0">
                                     {module.lessons.map((lesson) => (
                                         <ListGroupItem key={lesson._id} className="wd-lesson p-3 ps-1">
-                                            <BsGripVertical className="me-2 fs-3"/> {lesson.name}
-                                            <LessonControlButtons/>
+                                            <BsGripVertical key={module._id} className="me-2 fs-3"/> {lesson.name}
+                                            <LessonControlButtons key={module._id}/>
                                         </ListGroupItem>
                                     ))}
                                 </ListGroup>
