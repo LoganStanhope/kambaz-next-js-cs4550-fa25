@@ -1,3 +1,4 @@
+'use client';
 import './styles.css';
 import {Button, FormControl, InputGroup, ListGroup, ListGroupItem} from "react-bootstrap";
 import {HiMiniMagnifyingGlassPlus} from "react-icons/hi2";
@@ -7,10 +8,11 @@ import AssignmentButton from "@/app/(Kambaz)/Courses/[cid]/Assignments/Assignmen
 import AssignmentEditButton from "@/app/(Kambaz)/Courses/[cid]/Assignments/AssignmentEditButton";
 import AssignmentIconButton from "@/app/(Kambaz)/Courses/[cid]/Assignments/AssignmentIconButton";
 import Link from "next/link";
+import {assignments} from "../../../Database";
+import {useParams} from "next/navigation";
 
-export default async function Assignments({params,}:
-                                              { params: Promise<{ cid: string }>; }) {
-    const {cid} = await params;
+export default async function Assignments() {
+    const {cid} = useParams();
     return (
         <div id="wd-assignments">
             <div className="d-flex justify-content-between">
@@ -39,54 +41,25 @@ export default async function Assignments({params,}:
                         <AssignmentEditButton/>
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
-                        <ListGroupItem as={Link}
-                                       href={`/Courses/${cid}/Assignments/A1 - ENV + HTML`}
-                                       className="wd-lesson p-4 ps-1 flex-column">
-                            <AssignmentIconButton/>
-                            <div className="d-flex flex-column flex-grow-1">
-                                <h3>A1</h3>
-                                <div className="d-flex flex-row justify-content-between">
-                                    <p className="mb-0">
-                                        <span style={{color: 'red'}}> Multiple Modules </span>
-                                        | <b>Not available until </b> May 6 at 12:00am |<br/>
-                                        <b> Due </b> May 13 at 11:59pm | 100pts
-                                    </p>
-                                    <LessonControlButtons/>
+                        {assignments.filter((module: any) => module.course === cid)
+                            .map((assignment: any) => (
+                            <ListGroupItem as={Link}
+                                           href={`/Courses/${assignment.course}/Assignments/${assignment._id}`}
+                                           className="wd-lesson p-4 ps-1 flex-column">
+                                <AssignmentIconButton/>
+                                <div className="d-flex flex-column flex-grow-1">
+                                    <h3>{assignment._id}</h3>
+                                    <div className="d-flex flex-row justify-content-between">
+                                        <p className="mb-0">
+                                            <span style={{color: 'red'}}> Multiple Modules </span>
+                                            | <b>Not available until </b> May 6 at 12:00am |<br/>
+                                            <b> Due </b> May 13 at 11:59pm | 100pts
+                                        </p>
+                                        <LessonControlButtons/>
+                                    </div>
                                 </div>
-                            </div>
-                        </ListGroupItem>
-                        <ListGroupItem as={Link}
-                                       href={`/Courses/${cid}/Assignments/A2 - CSS + BOOTSTRAP`}
-                                       className="wd-lesson p-4 ps-1 flex-column">
-                            <AssignmentIconButton/>
-                            <div className="d-flex flex-column flex-grow-1">
-                                <h3>A2</h3>
-                                <div className="d-flex flex-row justify-content-between">
-                                    <p className="mb-0">
-                                        <span style={{color: 'red'}}> Multiple Modules </span>
-                                        | <b>Not available until </b> May 13 at 12:00am |<br/>
-                                        <b> Due </b> May 20 at 11:59pm | 100pts
-                                    </p>
-                                    <LessonControlButtons/>
-                                </div>
-                            </div>
-                        </ListGroupItem>
-                        <ListGroupItem as={Link}
-                                       href={`/Courses/${cid}/Assignments/A3 - JAVASCRIPT + REACT`}
-                                       className="wd-lesson p-4 ps-1 flex-column">
-                            <AssignmentIconButton/>
-                            <div className="d-flex flex-column flex-grow-1">
-                                <h3>A3</h3>
-                                <div className="d-flex flex-row justify-content-between">
-                                    <p className="mb-0">
-                                        <span style={{color: 'red'}}> Multiple Modules </span>
-                                        | <b>Not available until </b> May 20 at 12:00am |<br/>
-                                        <b> Due </b> May 27 at 11:59pm | 100pts
-                                    </p>
-                                    <LessonControlButtons/>
-                                </div>
-                            </div>
-                        </ListGroupItem>
+                            </ListGroupItem>
+                        ))}
                     </ListGroup>
                 </ListGroupItem>
             </ListGroup>

@@ -1,30 +1,22 @@
 'use client';
 import {ListGroup, ListGroupItem} from "react-bootstrap";
 import Link from "next/link";
+import {usePathname} from "next/navigation";
 
 export default function CourseNavigation({cid}: { cid: string }) {
+    const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades", "People"];
+    const pathname = usePathname();
 
     return (
         <ListGroup id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Home`} active id="wd-course-home-link">Home</ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Modules`} id="wd-course-modules-link">Modules
-            </ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Piazza`} id="wd-course-piazza-link">Piazza</ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Zoom`} id="wd-course-zoom-link">Zoom</ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Assignments`} id="wd-course-assignments-link">
-                Assignments</ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Quizzes`} id="wd-course-quizzes-link">Quizzes
-            </ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/Grades`} id="wd-course-grades-link">Grades</ListGroupItem>
-            <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
-                           href={`/Courses/${cid}/People`} id="wd-course-people-link">People</ListGroupItem>
+            {links.map((link) => (
+                <ListGroupItem as={Link}
+                               className={pathname.includes(link)?
+                                   "list-group-item border-0 border border-0 text-black" :
+                                   "list-group-item border-0 border border-0 text-danger"}
+                               href={`/Courses/${cid}/${link}`} active={pathname.includes(link)}
+                               id="wd-course-home-link">{link}</ListGroupItem>
+            ))}
         </ListGroup>
     );
 }

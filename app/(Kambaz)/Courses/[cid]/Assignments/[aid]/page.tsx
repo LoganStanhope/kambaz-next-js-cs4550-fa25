@@ -4,18 +4,20 @@ import {Button, Col, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, I
 import {AiFillCalendar} from "react-icons/ai";
 import InputGroupText from "react-bootstrap/InputGroupText";
 import React from "react";
+import {useParams} from "next/navigation";
+import {assignments} from "../../../../Database";
+import Link from "next/link";
 
-export default async function AssignmentEditor({params,}:
-                                                   { params: Promise<{ aid: string }>; }) {
-    const {aid} = await params;
-    const decodedAid = decodeURIComponent(aid);
+export default async function AssignmentEditor() {
+    const {cid, aid} = useParams();
+    const assignment = assignments.find((a: any) => a.course === cid && a._id === aid);
     return (
         <div id="wd-assignments-editor" className="d-flex flex-column justify-content-end">
             <div>
                 <h3>Assignment Name</h3>
                 <FormGroup as={Row} className="mb-3" controlId="email1">
                     <Col sm={20}>
-                        <FormControl type="email" value={decodedAid}/>
+                        <FormControl type="email" value={assignment?._id}/>
                     </Col>
                 </FormGroup> <br/>
                 <div className="assignment-text border rounded p-3">
@@ -29,6 +31,7 @@ export default async function AssignmentEditor({params,}:
                         <li>Links to all relevant source code repositories</li>
                     </ul>
                     The Kanbas application should include a link to navigate back to the landing page.<br/><br/>
+                    Assignment Description: {assignment?.description}
                 </div>
                 <br/>
             </div>
@@ -39,7 +42,7 @@ export default async function AssignmentEditor({params,}:
                         Points
                     </FormLabel>
                     <Col sm={10}>
-                        <FormControl defaultValue="100"/>
+                        <FormControl defaultValue={assignment?.points}/>
                     </Col>
                 </FormGroup>
             </div>
@@ -109,7 +112,7 @@ export default async function AssignmentEditor({params,}:
                         </FormGroup>
                         <b>Due</b><br/>
                         <InputGroup className="mb-3">
-                            <FormControl type="date" size="lg" placeholder="May 12, 2024, 11:59PM" id="wd-search"/>
+                            <FormControl type="date" size="lg" value={assignment?.due_date} id="wd-search"/>
                             <InputGroupText>
                                 <AiFillCalendar/>
                             </InputGroupText>
@@ -118,7 +121,8 @@ export default async function AssignmentEditor({params,}:
                             <div className="d-flex flex-column">
                                 <b>Available from</b>
                                 <InputGroup className="mb-3">
-                                    <FormControl  type="date" size="lg" placeholder="May 6, 2024, 11:59PM" id="wd-search"/>
+                                    <FormControl type="date" size="lg" value={assignment?.available_date}
+                                                 id="wd-search"/>
                                     <InputGroupText>
                                         <AiFillCalendar/>
                                     </InputGroupText>
@@ -127,7 +131,7 @@ export default async function AssignmentEditor({params,}:
                             <div className="d-flex flex-column">
                                 <b>Until</b>
                                 <InputGroup className="mb-3">
-                                    <FormControl  type="date" size="lg" placeholder="" id="wd-search"/>
+                                    <FormControl type="date" size="lg" placeholder="" id="wd-search"/>
                                     <InputGroupText>
                                         <AiFillCalendar/>
                                     </InputGroupText>
@@ -139,8 +143,8 @@ export default async function AssignmentEditor({params,}:
                 <hr/>
             </div>
             <div className="d-flex gap-2 f" style={{width: "120px"}}>
-                <Button variant="secondary" size="lg"> Cancel </Button>
-                <Button variant="danger" size="lg">Save </Button>
+                <Button variant="secondary" size="lg" href={"./"}> Cancel </Button>
+                <Button variant="danger" size="lg" href={"./"}>Save </Button>
             </div>
         </div>
     );

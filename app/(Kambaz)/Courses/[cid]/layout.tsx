@@ -1,6 +1,8 @@
 import {ReactNode} from "react";
 import CourseNavigation from "./Navigation";
 import {FaAlignJustify} from "react-icons/fa6";
+import {courses} from "../../Database";
+import Breadcrumb from "@/app/(Kambaz)/Courses/[cid]/BreadCrumb";
 
 export default async function CoursesLayout(
     {children, params}: Readonly<{
@@ -8,11 +10,13 @@ export default async function CoursesLayout(
         params: Promise<{ cid: string }>
     }>) {
     const {cid} = await params;
+    const course = courses.find((course) => course._id === cid);
     return (
         <div id="wd-courses">
             <h2 className="text-danger">
                 <FaAlignJustify className="me-4 fs-4 mb-1"/>
-                Courses {cid}</h2>
+                <Breadcrumb course={course}/>
+                </h2>
             <hr/>
 
             <div className="d-flex">

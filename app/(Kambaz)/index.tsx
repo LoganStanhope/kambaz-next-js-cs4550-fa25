@@ -18,7 +18,7 @@ export default async function Kambaz({params,}:
                 <Route path="/" element={<Navigate to="Home"/>}/>
                 <Route path="Home" element={<Home/>}/>
                 <Route path="Modules" element={<Modules/>}/>
-                <Route path="Assignments" element={<Assignments params={params}/>}/>
+                <Route path="Assignments" element={<Assignments/>}/>
                 <Route path="Piazza" element={<Piazza/>}/>
                 <Route path="Zoom" element={<Zoom/>}/>
                 <Route path="Quizzes" element={<Quizzes/>}/>

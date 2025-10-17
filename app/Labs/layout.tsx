@@ -4,7 +4,7 @@ import TOC from "./TOC";
 export default function LabsLayout({children}:
                                        Readonly<{ children: ReactNode }>) {
     return (
-        <div className="d-flex flex-column align-items-center">
+        <div className="d-flex flex-column">
             <div className="mb-3">
                 <TOC/>
             </div>
