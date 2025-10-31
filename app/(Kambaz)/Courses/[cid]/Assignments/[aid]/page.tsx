@@ -15,7 +15,7 @@ export default function AssignmentEditor() {
     const {cid, aid} = useParams();
     const router = useRouter();
     const dispatch = useDispatch();
-    const existingAssignment = assignments.find((a) => a.course === cid && a._id === aid);
+    const existingAssignment = assignments.find((a: { _id: string; course: string }) => a.course === cid && a._id === aid);
     const [assignment, setAssignment] = useState({
         _id: existingAssignment?._id || uuidv4(),
         title: existingAssignment?.title || "",
