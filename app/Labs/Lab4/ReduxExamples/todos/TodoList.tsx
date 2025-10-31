@@ -9,10 +9,10 @@ export default function TodoList() {
     return (
         <div>
             <h2>Todo List</h2>
-            <ListGroup>
-                <TodoForm/>
+            <ListGroup key={todos}>
+                <TodoForm key={todos}/>
                 {todos.map((todo: any) => (
-                    <TodoItem todo={todo}/>
+                    <TodoItem key={todo} todo={todo}/>
                 ))}
             </ListGroup>
             <hr/>
