@@ -79,8 +79,8 @@ export default function Assignments() {
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
                         {assignments
-                            .filter(a => a.course === cid)
-                            .map(a => (
+                            .filter((a: { _id: string; course: string }) => a.course === cid)
+                            .map((a: { _id: string; course: string }) => (
                                 <ListGroupItem as={currentUserRole == "STUDENT" ? "span" : Link}
                                                key={a._id}
                                                href={`/Courses/${a.course}/Assignments/${a._id}`}
