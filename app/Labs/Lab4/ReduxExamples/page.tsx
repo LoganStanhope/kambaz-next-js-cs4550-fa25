@@ -1,3 +1,4 @@
+"use client";
 import HelloRedux from "@/app/Labs/Lab4/ReduxExamples/HelloRedux";
 import CounterRedux from "@/app/Labs/Lab4/ReduxExamples/CounterRedux";
 import AddRedux from "@/app/Labs/Lab4/ReduxExamples/AddRedux";
