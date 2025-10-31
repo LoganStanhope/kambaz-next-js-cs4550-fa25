@@ -3,21 +3,48 @@ import '../styles.css';
 import {Button, Col, FormCheck, FormControl, FormGroup, FormLabel, FormSelect, InputGroup, Row} from "react-bootstrap";
 import {AiFillCalendar} from "react-icons/ai";
 import InputGroupText from "react-bootstrap/InputGroupText";
-import React from "react";
-import {useParams} from "next/navigation";
-import {assignments} from "../../../../Database";
-import Link from "next/link";
+import React, {useState} from "react";
+import {useParams, useRouter} from "next/navigation";
+import {useDispatch} from "react-redux";
+import {addAssignment, updateAssignment} from "@/app/(Kambaz)/Courses/[cid]/Assignments/reducer";
+import {v4 as uuidv4} from "uuid";
+import {useSelector} from "react-redux";
 
 export default function AssignmentEditor() {
+    const {assignments} = useSelector((state: any) => state.assignmentsReducer);
     const {cid, aid} = useParams();
-    const assignment = assignments.find((a) => a.course === cid && a._id === aid);
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const existingAssignment = assignments.find((a) => a.course === cid && a._id === aid);
+    const [assignment, setAssignment] = useState({
+        _id: existingAssignment?._id || uuidv4(),
+        title: existingAssignment?.title || "",
+        description: existingAssignment?.description || "",
+        points: existingAssignment?.points || 0,
+        due_date: existingAssignment?.due_date || "",
+        available_date: existingAssignment?.available_date || "",
+        available_until: existingAssignment?.available_until || "",
+        course: cid
+    });
+
+    const handleSave = () => {
+        if (existingAssignment) {
+            dispatch(updateAssignment(assignment));
+        } else {
+            dispatch(addAssignment(assignment));
+        }
+        router.push(`/Courses/${cid}/Assignments`);
+    }
+    const handleCancel = () => router.push(`/Courses/${cid}/Assignments`);
     return (
         <div id="wd-assignments-editor" className="d-flex flex-column justify-content-end">
             <div>
                 <h3>Assignment Name</h3>
                 <FormGroup as={Row} className="mb-3" controlId="email1">
                     <Col sm={20}>
-                        <FormControl type="email" value={assignment?._id}/>
+                        <FormControl type="text" value={assignment.title}
+                                     onChange={(e) => setAssignment({...assignment, title: e.target.value})}
+                        />
                     </Col>
                 </FormGroup> <br/>
                 <div className="assignment-text border rounded p-3">
@@ -31,7 +58,11 @@ export default function AssignmentEditor() {
                         <li>Links to all relevant source code repositories</li>
                     </ul>
                     The Kanbas application should include a link to navigate back to the landing page.<br/><br/>
-                    Assignment Description: {assignment?.description}
+                    <FormControl
+                        value={`${assignment.description}`}
+                        type="text"
+                        onChange={(e) => setAssignment({...assignment, description: e.target.value})}>
+                    </FormControl>
                 </div>
                 <br/>
             </div>
@@ -42,7 +73,9 @@ export default function AssignmentEditor() {
                         Points
                     </FormLabel>
                     <Col sm={10}>
-                        <FormControl defaultValue={assignment?.points}/>
+                        <FormControl defaultValue={assignment.points}
+                                     onChange={(e) => setAssignment({...assignment, points: e.target.value})}
+                        />
                     </Col>
                 </FormGroup>
             </div>
@@ -112,7 +145,9 @@ export default function AssignmentEditor() {
                         </FormGroup>
                         <b>Due</b><br/>
                         <InputGroup className="mb-3">
-                            <FormControl type="date" size="lg" value={assignment?.due_date} id="wd-search"/>
+                            <FormControl type="date" size="lg" value={assignment.due_date}
+                                         onChange={(e) => setAssignment({...assignment, due_date: e.target.value})}
+                                         id="wd-search"/>
                             <InputGroupText>
                                 <AiFillCalendar/>
                             </InputGroupText>
@@ -121,7 +156,11 @@ export default function AssignmentEditor() {
                             <div className="d-flex flex-column">
                                 <b>Available from</b>
                                 <InputGroup className="mb-3">
-                                    <FormControl type="date" size="lg" value={assignment?.available_date}
+                                    <FormControl type="date" size="lg" value={assignment.available_date}
+                                                 onChange={(e) => setAssignment({
+                                                     ...assignment,
+                                                     available_date: e.target.value
+                                                 })}
                                                  id="wd-search"/>
                                     <InputGroupText>
                                         <AiFillCalendar/>
@@ -131,7 +170,11 @@ export default function AssignmentEditor() {
                             <div className="d-flex flex-column">
                                 <b>Until</b>
                                 <InputGroup className="mb-3">
-                                    <FormControl type="date" size="lg" placeholder="" id="wd-search"/>
+                                    <FormControl
+                                        value={assignment.available_until}
+                                        onChange={(e) =>
+                                        setAssignment({...assignment, available_until: e.target.value})}
+                                        type="date" size="lg" placeholder="" id="wd-search"/>
                                     <InputGroupText>
                                         <AiFillCalendar/>
                                     </InputGroupText>
@@ -143,8 +186,8 @@ export default function AssignmentEditor() {
                 <hr/>
             </div>
             <div className="d-flex gap-2 f" style={{width: "120px"}}>
-                <Button variant="secondary" size="lg" href={"./"}> Cancel </Button>
-                <Button variant="danger" size="lg" href={"./"}>Save </Button>
+                <Button variant="secondary" size="lg" onClick={handleCancel}> Cancel </Button>
+                <Button variant="danger" size="lg" onClick={handleSave}>Save </Button>
             </div>
         </div>
     );

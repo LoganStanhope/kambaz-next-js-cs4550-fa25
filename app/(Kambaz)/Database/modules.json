@@ -20,7 +20,7 @@
     ]
   },
   {
-    "_id": "CS1234",
+    "_id": "CS1235",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "CS1234",
@@ -46,25 +46,25 @@
     ]
   },
   {
-    "_id": "CS1234",
+    "_id": "CS1236",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "CS1234",
     "lessons": [
       {
-        "_id": "L201",
+        "_id": "L301",
         "name": "React 101",
         "description": "Learning the React application.",
         "module": "M102"
       },
       {
-        "_id": "L202",
+        "_id": "L302",
         "name": "Chapter 3: Web Development for Dummies",
         "description": "Web development basics.",
         "module": "M102"
       },
       {
-        "_id": "L203",
+        "_id": "L303",
         "name": "Using CSS with React",
         "description": "Learning how to use CSS with the React application.",
         "module": "M102"
@@ -100,7 +100,7 @@
     ]
   },
   {
-    "_id": "ENVR1111",
+    "_id": "ENVR1112",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "ENVR1111",
@@ -126,7 +126,7 @@
     ]
   },
   {
-    "_id": "ENVR1111",
+    "_id": "ENVR1113",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "ENVR1111",
@@ -158,7 +158,7 @@
 
 
   {
-    "_id": "DS2233",
+    "_id": "DS2234",
     "name": "Week 1, Lecture 1 - Course Introduction, Syllabus, Agenda",
     "description": "This course provides an intro to full stack software developer.",
     "course": "DS2233",
@@ -178,7 +178,7 @@
     ]
   },
   {
-    "_id": "DS2233",
+    "_id": "DS2235",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "DS2233",
@@ -204,7 +204,7 @@
     ]
   },
   {
-    "_id": "DS2233",
+    "_id": "DS2236",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "DS2233",
@@ -260,7 +260,7 @@
     ]
   },
   {
-    "_id": "CS3341",
+    "_id": "CS3342",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "CS3341",
@@ -286,7 +286,7 @@
     ]
   },
   {
-    "_id": "CS3341",
+    "_id": "CS3343",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "CS3341",
@@ -338,7 +338,7 @@
     ]
   },
   {
-    "_id": "PHIL4223",
+    "_id": "PHIL4224",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "PHIL4223",
@@ -364,7 +364,7 @@
     ]
   },
   {
-    "_id": "PHIL4223",
+    "_id": "PHIL4225",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "PHIL4223",
@@ -418,7 +418,7 @@
     ]
   },
   {
-    "_id": "CS1122",
+    "_id": "CS1123",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "CS1122",
@@ -444,7 +444,7 @@
     ]
   },
   {
-    "_id": "CS1122",
+    "_id": "CS1124",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "CS1122",
@@ -497,7 +497,7 @@
     ]
   },
   {
-    "_id": "DS3141",
+    "_id": "DS3142",
     "name": "Week 2, Lecture 2 - Formatting User Interface with HTML",
     "description": "This course provides an intro to full stack software developer.",
     "course": "DS3141",
@@ -523,7 +523,7 @@
     ]
   },
   {
-    "_id": "DS3141",
+    "_id": "DS3143",
     "name": "Week 3, Lecture 3 - Working with React",
     "description": "This course provides an intro to full stack software developer.",
     "course": "DS3141",
