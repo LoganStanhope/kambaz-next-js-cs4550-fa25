@@ -7,7 +7,7 @@ import {useSelector} from "react-redux";
 import {useParams} from "next/navigation";
 
 export default function CoursesLayout({children}: { children: ReactNode }) {
-    const {cid} = useParams();
+    const {cid} = useParams<{ cid: string }>();
     const {courses} = useSelector((state: any) => state.coursesReducer);
     const [showNav, setShowNav] = useState<boolean>(true)
     const course = courses.find((course: any) => course._id === cid);
