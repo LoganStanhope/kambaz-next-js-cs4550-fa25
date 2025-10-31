@@ -3,7 +3,7 @@ export default function ForLoops() {
     const stringArray2 = [];
     for (let i = 0; i < stringArray1.length; i++) {
         const string1 = stringArray1[i];
-        // @ts-ignore because it is for lab assignment
+        // @ts-expect-error because it is for lab assignment
         stringArray2.push(string1.toUpperCase());
     }
     return (
