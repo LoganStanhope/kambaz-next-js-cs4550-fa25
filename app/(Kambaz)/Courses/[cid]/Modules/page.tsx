@@ -59,10 +59,12 @@ export default function Modules() {
                             </div>
                             {module.lessons && (
                                 <ListGroup key={`${module._id}-${module.name}`} className="wd-lessons rounded-0">
-                                    {module.lessons.map((lesson) => (
+                                    {module.lessons.map((lesson : { _id: string; name: string;}) => (
                                         <ListGroupItem key={lesson._id} className="wd-lesson p-3 ps-1">
                                             <BsGripVertical key={module._id} className="me-2 fs-3"/> {lesson.name}
-                                            <LessonControlButtons key={`${module._id}-${module.name}`}/>
+                                            <LessonControlButtons key={`${module._id}-${module.name}`}
+                                                                  assignmentId={module._id}
+                                                                  deleteAssignment={module._id}/>
                                         </ListGroupItem>
                                     ))}
                                 </ListGroup>

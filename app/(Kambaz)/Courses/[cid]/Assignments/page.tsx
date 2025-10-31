@@ -81,8 +81,6 @@ export default function Assignments() {
                         {assignments
                             .filter((a: { _id: string; course: string }) => a.course === cid)
                             .map((a: { _id: string; course: string; title: string }) => (
-                            // .filter(a => a.course === cid)
-                            // .map(a => (
                                 <ListGroupItem as={currentUserRole == "STUDENT" ? "span" : Link}
                                                key={a._id}
                                                href={`/Courses/${a.course}/Assignments/${a._id}`}
