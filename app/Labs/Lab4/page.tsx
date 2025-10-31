@@ -20,7 +20,6 @@ export default function Lab4() {
     }
 
     return (
-
             <div id="wd-lab4">
                 <h2>Lab 4</h2>
                 <p> Logan Stanhope CS4550.11597.202610 </p>
