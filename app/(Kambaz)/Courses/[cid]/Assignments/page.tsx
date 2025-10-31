@@ -12,8 +12,6 @@ import {useParams, useRouter} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";
 import {deleteAssignment} from "@/app/(Kambaz)/Courses/[cid]/Assignments/reducer";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// getting rid of any warnings
 export default function Assignments() {
     function formatAssignmentText(assignment: any) {
         const formatDate = (dateStr: string) => {
@@ -81,8 +79,10 @@ export default function Assignments() {
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
                         {assignments
-                            .filter(a => a.course === cid)
-                            .map(a => (
+                            .filter((a: { _id: string; course: string }) => a.course === cid)
+                            .map((a: { _id: string; course: string; title: string }) => (
+                            // .filter(a => a.course === cid)
+                            // .map(a => (
                                 <ListGroupItem as={currentUserRole == "STUDENT" ? "span" : Link}
                                                key={a._id}
                                                href={`/Courses/${a.course}/Assignments/${a._id}`}
