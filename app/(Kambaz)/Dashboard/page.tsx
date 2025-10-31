@@ -14,10 +14,12 @@ export default function Dashboard() {
         startDate: "2023-09-10", endDate: "2023-12-15",
         image: "/images/reactjs.jpg", description: "New Description"
     });
+    const [showAllCourses, setShowAllCourses] = useState(false);
+
     if (!currentUser) {
         return <h2>Please sign in to view your dashboard.</h2>;
     }
-    const [showAllCourses, setShowAllCourses] = useState(false);
+
     const displayedCourses = showAllCourses
         ? courses
         : courses.filter(course =>
@@ -27,6 +29,7 @@ export default function Dashboard() {
                     enrollment.course === course._id
             )
         );
+
     const toggleEnrollment = (courseId: string) => {
         const isEnrolled = enrollments.some(
             (e) => e.user === currentUser._id && e.course === courseId
