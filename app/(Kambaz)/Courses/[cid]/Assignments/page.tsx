@@ -10,9 +10,32 @@ import AssignmentIconButton from "@/app/(Kambaz)/Courses/[cid]/Assignments/Assig
 import Link from "next/link";
 import {useParams, useRouter} from "next/navigation";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteAssignment} from "@/app/(Kambaz)/Courses/[cid]/Assignments/reducer";
+import {setAssignments} from "@/app/(Kambaz)/Courses/[cid]/Assignments/reducer";
+import {RootState} from "@/app/(Kambaz)/store";
+import * as client from "./client";
+import {useEffect} from "react";
 
 export default function Assignments() {
+    const {assignments} = useSelector((state: RootState) => state.assignmentsReducer);
+    const currentUserRole = useSelector((state: any) => state.accountReducer.currentUser?.role);
+    const {cid} = useParams();
+    const dispatch = useDispatch();
+    const router = useRouter();
+    const fetchAssignments = async () => {
+        const assignments = await client.fetchAllAssignments(cid as string);
+        dispatch(setAssignments(assignments));
+    };
+    const onRemoveAssignment = async (assignmentId: string, courseId: string) => {
+        await client.deleteAssignment(assignmentId, courseId);
+        dispatch(setAssignments(assignments.filter((a: any) => a._id !== assignmentId)));
+    };
+    useEffect(() => {
+        fetchAssignments();
+    }, []);
+
+    const handleAddAssignment = () => {
+        router.push(`/Courses/${cid}/Assignments/Editor`);
+    };
     function formatAssignmentText(assignment: any) {
         const formatDate = (dateStr: string) => {
             if (!dateStr) return "TBD";
@@ -35,16 +58,6 @@ export default function Assignments() {
             </p>
         );
     }
-
-    const {cid} = useParams();
-    const dispatch = useDispatch();
-    const router = useRouter();
-    const {assignments} = useSelector((state: any) => state.assignmentsReducer);
-    const handleAddAssignment = () => {
-        router.push(`/Courses/${cid}/Assignments/Editor`);
-    };
-    const currentUserRole = useSelector((state: any) => state.accountReducer.currentUser?.role);
-
     return (
         <div id="wd-assignments">
             <div className="d-flex justify-content-between">
@@ -79,7 +92,6 @@ export default function Assignments() {
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
                         {assignments
-                            .filter((a: { _id: string; course: string }) => a.course === cid)
                             .map((a: { _id: string; course: string; title: string }) => (
                                 <ListGroupItem as={currentUserRole == "STUDENT" ? "span" : Link}
                                                key={a._id}
@@ -87,15 +99,13 @@ export default function Assignments() {
                                                className="wd-lesson p-4 ps-1 flex-column">
                                     <AssignmentIconButton/>
                                     <div className="d-flex flex-column flex-grow-1">
-                                        <h3>{a._id}</h3>
+                                        <h3>{a.title}</h3>
                                         <div className="d-flex flex-row justify-content-between">
                                             {formatAssignmentText(a)}
                                             <LessonControlButtons
                                                 key={`${a._id}-${a.title}`}
                                                 assignmentId={a._id}
-                                                deleteAssignment={(assignmentId) => {
-                                                    dispatch(deleteAssignment(assignmentId))
-                                                }}
+                                                deleteAssignment={() => onRemoveAssignment(a._id, a.course)}
                                             />
                                         </div>
                                     </div>

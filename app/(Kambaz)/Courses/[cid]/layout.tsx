@@ -5,10 +5,11 @@ import {FaAlignJustify} from "react-icons/fa6";
 import Breadcrumb from "@/app/(Kambaz)/Courses/[cid]/BreadCrumb";
 import {useSelector} from "react-redux";
 import {useParams} from "next/navigation";
+import {RootState} from "@/app/(Kambaz)/store";
 
 export default function CoursesLayout({children}: { children: ReactNode }) {
     const {cid} = useParams<{ cid: string }>();
-    const {courses} = useSelector((state: any) => state.coursesReducer);
+    const {courses} = useSelector((state: RootState) => state.coursesReducer);
     const [showNav, setShowNav] = useState<boolean>(true)
     const course = courses.find((course: any) => course._id === cid);
     return (

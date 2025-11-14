@@ -2,9 +2,10 @@
 import {useSelector} from "react-redux";
 import {redirect}
     from "next/dist/client/components/navigation";
+import {RootState} from "@/app/(Kambaz)/store";
 
 export default function AccountPage() {
-    const {currentUser} = useSelector((state: any) => state.accountReducer);
+    const {currentUser} = useSelector((state: RootState) => state.accountReducer);
     if (!currentUser) {
         redirect("/Account/Signin");
     } else {

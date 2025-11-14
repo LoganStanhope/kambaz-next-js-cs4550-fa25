@@ -2,13 +2,15 @@ import {IoEllipsisVertical} from "react-icons/io5";
 import GreenCheckmark from "./GreenCheckmark";
 import {FaTrash} from "react-icons/fa";
 import {useSelector} from "react-redux";
+import {RootState} from "@/app/(Kambaz)/store";
 
 export default function LessonControlButtons(
     {assignmentId, deleteAssignment}: {
         assignmentId: string;
         deleteAssignment: (assignmentId: string) => void;
     }) {
-    const currentUserRole = useSelector((state: any) => state.accountReducer.currentUser?.role);
+    // @ts-ignore nonrelevant error
+    const currentUserRole = useSelector((state: RootState) => state.accountReducer.currentUser?.role);
     return (
         <div className="float-end">
             <GreenCheckmark/>

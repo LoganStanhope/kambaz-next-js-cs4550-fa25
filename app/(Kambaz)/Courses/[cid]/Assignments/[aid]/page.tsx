@@ -6,16 +6,21 @@ import InputGroupText from "react-bootstrap/InputGroupText";
 import React, {useState} from "react";
 import {useParams, useRouter} from "next/navigation";
 import {useDispatch} from "react-redux";
-import {addAssignment, updateAssignment} from "@/app/(Kambaz)/Courses/[cid]/Assignments/reducer";
+import {addAssignment, setAssignments, updateAssignment} from "@/app/(Kambaz)/Courses/[cid]/Assignments/reducer";
 import {v4 as uuidv4} from "uuid";
 import {useSelector} from "react-redux";
+import * as client from "../client";
+import {RootState} from "@/app/(Kambaz)/store";
 
 export default function AssignmentEditor() {
-    const {assignments} = useSelector((state: any) => state.assignmentsReducer);
+    const {assignments} = useSelector((state: RootState) => state.assignmentsReducer);
     const {cid, aid} = useParams();
     const router = useRouter();
     const dispatch = useDispatch();
-    const existingAssignment = assignments.find((a: { _id: string; course: string }) => a.course === cid && a._id === aid);
+    const existingAssignment = (assignments as any[]).find((a: {
+        _id: string;
+        course: string
+    }) => a.course === cid && a._id === aid);
     const [assignment, setAssignment] = useState({
         _id: existingAssignment?._id || uuidv4(),
         title: existingAssignment?.title || "",
@@ -27,11 +32,14 @@ export default function AssignmentEditor() {
         course: cid
     });
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (existingAssignment) {
             dispatch(updateAssignment(assignment));
+            await client.updateAssignment(assignment);
         } else {
+            const newAssignment = await client.createAssignmentForCourse(cid as string,assignment);
             dispatch(addAssignment(assignment));
+            dispatch(setAssignments([...assignments, assignment]));
         }
         router.push(`/Courses/${cid}/Assignments`);
     }
@@ -173,7 +181,7 @@ export default function AssignmentEditor() {
                                     <FormControl
                                         value={assignment.available_until}
                                         onChange={(e) =>
-                                        setAssignment({...assignment, available_until: e.target.value})}
+                                            setAssignment({...assignment, available_until: e.target.value})}
                                         type="date" size="lg" placeholder="" id="wd-search"/>
                                     <InputGroupText>
                                         <AiFillCalendar/>
