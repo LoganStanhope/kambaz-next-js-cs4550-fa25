@@ -65,14 +65,14 @@ export default function Modules() {
             </div>
 
             <ListGroup className="rounded-0 me-5" id="wd-modules">
-                {modules.map((module: any) => (
-                    <ListGroupItem key={module._id} className="wd-module p-0 mb-5 fs-5 border-gray">
+                {modules.map((m: any) => (
+                    <ListGroupItem key={m._id} className="wd-module p-0 mb-5 fs-5 border-gray">
                         <div className="wd-title p-3 ps-2 bg-secondary">
                             <BsGripVertical className="me-2 fs-3" />
 
-                            {!module.editing && module.name}
+                            {!m.editing && m.name}
 
-                            {module.editing && editingModule && editingModule._id === module._id && (
+                            {m.editing && editingModule && editingModule._id === m._id && (
                                 <FormControl
                                     className="w-50 d-inline-block"
                                     value={editingModule.name}
@@ -81,7 +81,7 @@ export default function Modules() {
                                     }
                                     onKeyDown={(e) => {
                                         if (e.key === "Enter") {
-                                            onUpdateModule({ ...module, name: editingModule.name, editing: false });
+                                            onUpdateModule({ ...m, name: editingModule.name, editing: false });
                                             setEditingModule(null);
                                         }
                                     }}
@@ -89,15 +89,15 @@ export default function Modules() {
                             )}
 
                             <ModuleControlButtons
-                                moduleId={module._id}
-                                deleteModule={() => onRemoveModule(module._id)}
-                                editModule={() => startEditing(module)}
+                                moduleId={m._id}
+                                deleteModule={() => onRemoveModule(m._id)}
+                                editModule={() => startEditing(m)}
                             />
                         </div>
 
-                        {module.lessons && (
+                        {m.lessons && (
                             <ListGroup className="wd-lessons rounded-0">
-                                {module.lessons.map((lesson: { _id: string; name: string }) => (
+                                {m.lessons.map((lesson: { _id: string; name: string }) => (
                                     <ListGroupItem key={lesson._id} className="wd-lesson p-3 ps-1">
                                         <BsGripVertical className="me-2 fs-3" />
                                         {lesson.name}

@@ -16,11 +16,11 @@ const assignmentsSlice = createSlice({
                 ...assignment,
                 _id: assignment.title
             };
-            // @ts-ignore don't need the error
+            // @ts-expect-error don't need the error
             state.assignments.push(newAssignment);
         },
         updateAssignment: (state, { payload: assignment }) => {
-            // @ts-ignore don't need the error
+            // @ts-expect-error don't need the error
             state.assignments = state.assignments.map((a: any) =>
                 a._id === assignment._id ? assignment : a
             );

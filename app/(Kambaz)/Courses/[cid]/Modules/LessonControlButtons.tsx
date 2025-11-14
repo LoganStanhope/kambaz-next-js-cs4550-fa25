@@ -9,7 +9,7 @@ export default function LessonControlButtons(
         assignmentId: string;
         deleteAssignment: (assignmentId: string) => void;
     }) {
-    // @ts-ignore nonrelevant error
+    // @ts-expect-error nonrelevant error
     const currentUserRole = useSelector((state: RootState) => state.accountReducer.currentUser?.role);
     return (
         <div className="float-end">
