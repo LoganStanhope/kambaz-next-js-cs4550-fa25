@@ -45,6 +45,16 @@ export default function TOC() {
                     My GitHub
                 </Nav.Link>
             </Nav.Item>
+            <Nav.Item>
+                <Nav.Link href="https://github.com/LoganStanhope/kambaz-node-server-app" target="_blank" rel="noopener noreferrer">
+                    My Server GitHub
+                </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+                <Nav.Link href="https://kambaz-node-server-app-lwup.onrender.com/" target="_blank" rel="noopener noreferrer">
+                    Running Server
+                </Nav.Link>
+            </Nav.Item>
         </Nav>
     );
 }
