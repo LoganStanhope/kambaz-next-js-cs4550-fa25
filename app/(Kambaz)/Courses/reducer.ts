@@ -63,6 +63,9 @@ const coursesSlice = createSlice({
         setCourses: (state, {payload: courses}) => {
             state.courses = courses;
         },
+        setEnrollments: (state, { payload: enrollments }: PayloadAction<Enrollment[]>) => {
+            state.enrollments = enrollments;
+        },
     },
 });
 
@@ -72,7 +75,8 @@ export const {
     updateCourse,
     enrollCourse,
     unenrollCourse,
-    setCourses
+    setCourses,
+    setEnrollments
 } = coursesSlice.actions;
 
 export default coursesSlice.reducer;

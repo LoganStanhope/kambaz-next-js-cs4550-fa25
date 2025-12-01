@@ -3,7 +3,7 @@ import Link from "next/link";
 import {setCurrentUser} from "../reducer";
 import {useDispatch} from "react-redux";
 import {useState} from "react";
-import {redirect, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 import {FormControl, Button} from "react-bootstrap";
 import * as client from "../client";
 
@@ -16,7 +16,7 @@ export default function Signin() {
 
         if (!user) return;
         dispatch(setCurrentUser(user));
-        redirect("/Dashboard");
+        router.push("/Dashboard");
     };
     return (
         <div id="wd-signin-screen" style={{width: "300px"}}>
