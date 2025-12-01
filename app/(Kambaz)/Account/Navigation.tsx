@@ -7,6 +7,8 @@ import {RootState} from "@/app/(Kambaz)/store";
 export default function AccountNavigation() {
     const {currentUser} = useSelector((state: RootState) => state.accountReducer);
     const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
+    // @ts-ignore because not important error
+    const user = currentUser && currentUser?.role;
     return (
         <ListGroup id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
             <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
@@ -16,6 +18,10 @@ export default function AccountNavigation() {
             </ListGroupItem>
             <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
                            href="Profile" id="wd-course-piazza-link">Profile</ListGroupItem>
+            {user === "ADMIN" && (
+                <ListGroupItem as={Link} className="list-group-item border-0 border border-0 text-danger"
+                               href="Users" id="wd-course-users-link">Users</ListGroupItem> )}
+
         </ListGroup>
     );
 }
