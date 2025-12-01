@@ -13,7 +13,7 @@ export default function People() {
         if (!cid) return;
         setLoading(true);
         try {
-            //@ts-ignore error not important
+            // @ts-expect-error don't need the error
             const data = await findUsersForCourse(cid);
             setUsers(data);
         } catch (err) {

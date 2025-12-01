@@ -32,7 +32,7 @@ export default function CourseNavigation({cid}: { cid: string }) {
         "Grades",
         "People"
     ];
-    // @ts-ignore not important error
+    // @ts-expect-error don't need the error
     const links = currentUser && currentUser?.role === "ADMIN" ? adminLinks : nonAdminlinks;
 
     return (

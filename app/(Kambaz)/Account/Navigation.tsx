@@ -7,7 +7,7 @@ import {RootState} from "@/app/(Kambaz)/store";
 export default function AccountNavigation() {
     const {currentUser} = useSelector((state: RootState) => state.accountReducer);
     const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
-    // @ts-ignore because not important error
+    // @ts-expect-error don't need the error
     const user = currentUser && currentUser?.role;
     return (
         <ListGroup id="wd-account-navigation" className="wd list-group fs-5 rounded-0">

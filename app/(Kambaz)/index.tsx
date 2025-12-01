@@ -12,7 +12,7 @@ import {RootState} from "@/app/(Kambaz)/store";
 export default function Kambaz({params,}:
                                    { params: Promise<{ cid: string, aid: string }>; }) {
     const {currentUser} = useSelector((state: RootState) => state.accountReducer);
-    // @ts-ignore not important error
+    // @ts-expect-error don't need the error
     const showAdmin = currentUser?.role === "ADMIN";
     return (
         <div id="wd-kambaz">
