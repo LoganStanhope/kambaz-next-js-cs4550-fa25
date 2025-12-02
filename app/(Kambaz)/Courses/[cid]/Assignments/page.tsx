@@ -68,7 +68,7 @@ export default function Assignments() {
                     <FormControl size="lg" type="search" placeholder="Search..." id="wd-search"/>
                 </InputGroup>
                 <div>
-                    {currentUserRole == "STUDENT" ? <div></div> :
+                    {(currentUserRole === "FACULTY" || currentUserRole === "ADMIN") && (
                         <div>
                             <Button onClick={handleAddAssignment}
                                     variant="danger" size="lg" className="me-1 float-end" id="wd-add-assignment">+
@@ -76,7 +76,7 @@ export default function Assignments() {
                             <Button variant="secondary" size="lg" className="me-1 float-end"
                                     id="wd-add-assignment-group">+
                                 Group</Button></div>
-                    }
+                    )}
                 </div>
             </div>
             <br/><br/><br/><br/>
@@ -88,7 +88,9 @@ export default function Assignments() {
                             <AssignmentButton/>
                             ASSIGNMENTS
                         </div>
-                        <AssignmentEditButton/>
+                        {(currentUserRole === "FACULTY" || currentUserRole === "ADMIN") && (
+                            <AssignmentEditButton/>
+                        )}
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
                         {assignments
@@ -102,11 +104,13 @@ export default function Assignments() {
                                         <h3>{a.title}</h3>
                                         <div className="d-flex flex-row justify-content-between">
                                             {formatAssignmentText(a)}
-                                            <LessonControlButtons
-                                                key={`${a._id}-${a.title}`}
-                                                assignmentId={a._id}
-                                                deleteAssignment={() => onRemoveAssignment(a._id, a.course)}
-                                            />
+                                            {(currentUserRole === "FACULTY" || currentUserRole === "ADMIN") && (
+                                                <LessonControlButtons
+                                                    key={`${a._id}-${a.title}`}
+                                                    assignmentId={a._id}
+                                                    deleteAssignment={() => onRemoveAssignment(a._id, a.course)}
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </ListGroupItem>

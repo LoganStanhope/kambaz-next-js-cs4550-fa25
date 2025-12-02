@@ -14,7 +14,9 @@ import * as client from "../../client";
 export default function Modules() {
     const { cid } = useParams();
     const { modules } = useSelector((state: RootState) => state.modulesReducer);
+    const { currentUser } = useSelector((state: RootState) => state.accountReducer) as any;
     const dispatch = useDispatch();
+    const isFacultyOrAdmin = currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
     const [moduleName, setModuleName] = useState("");
     const [editingModule, setEditingModule] = useState<{ _id: string; name: string } | null>(null);
@@ -61,14 +63,16 @@ export default function Modules() {
 
     return (
         <div>
-            <div id="wd-module-buttons" className="me-5">
-                <ModulesControls
-                    moduleName={moduleName}
-                    setModuleName={setModuleName}
-                    addModule={onCreateModuleForCourse}
-                />
-                <br /><br /><br />
-            </div>
+            {isFacultyOrAdmin && (
+                <div id="wd-module-buttons" className="me-5">
+                    <ModulesControls
+                        moduleName={moduleName}
+                        setModuleName={setModuleName}
+                        addModule={onCreateModuleForCourse}
+                    />
+                    <br /><br /><br />
+                </div>
+            )}
 
             <ListGroup className="rounded-0 me-5" id="wd-modules">
                 {modules.map((m: any) => (
@@ -94,11 +98,13 @@ export default function Modules() {
                                 />
                             )}
 
-                            <ModuleControlButtons
-                                moduleId={m._id}
-                                deleteModule={() => onRemoveModule(m._id)}
-                                editModule={() => startEditing(m)}
-                            />
+                            {isFacultyOrAdmin && (
+                                <ModuleControlButtons
+                                    moduleId={m._id}
+                                    deleteModule={() => onRemoveModule(m._id)}
+                                    editModule={() => startEditing(m)}
+                                />
+                            )}
                         </div>
 
                         {m.lessons && (
@@ -107,10 +113,12 @@ export default function Modules() {
                                     <ListGroupItem key={lesson._id} className="wd-lesson p-3 ps-1">
                                         <BsGripVertical className="me-2 fs-3" />
                                         {lesson.name}
-                                        <LessonControlButtons
-                                            assignmentId={lesson._id}
-                                            deleteAssignment={() => console.log("deleteLesson not implemented yet")}
-                                        />
+                                        {isFacultyOrAdmin && (
+                                            <LessonControlButtons
+                                                assignmentId={lesson._id}
+                                                deleteAssignment={() => console.log("deleteLesson not implemented yet")}
+                                            />
+                                        )}
                                     </ListGroupItem>
                                 ))}
                             </ListGroup>
