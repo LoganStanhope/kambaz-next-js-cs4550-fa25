@@ -48,8 +48,10 @@ export default function Dashboard() {
 
     // Load user enrollments (courses stay unchanged)
     const loadMyEnrollments = async () => {
+        if (!currentUser?._id) return; // ← safe check
+
         const myCourses = await client.fetchEnrollments(currentUser._id);
-        const ids = myCourses.map((c: any) => c._id);
+        const ids = (myCourses || []).filter(Boolean).map((c: any) => c._id); // filter out null
 
         dispatch(setEnrollments(
             ids.map((courseId: string) => ({
@@ -58,6 +60,7 @@ export default function Dashboard() {
             }))
         ));
     };
+
 
     useEffect(() => {
         if (currentUser) {
