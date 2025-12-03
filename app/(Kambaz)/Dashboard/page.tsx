@@ -325,7 +325,7 @@ export default function Dashboard() {
             {canEnroll && displayedCourses.length === 0 && (
                 <div className="alert alert-info mt-3">
                     <p>You are not enrolled in any courses yet.</p>
-                    <p>Click "Enroll in Courses" above to browse and enroll in available courses.</p>
+                    <p>Click &quot;Enroll in Courses&quot; above to browse and enroll in available courses.</p>
                 </div>
             )}
 
