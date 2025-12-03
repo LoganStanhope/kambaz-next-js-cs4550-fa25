@@ -1,339 +1,695 @@
 [
   {
-    "_id": "CS1234",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
+    "_id": "quiz123",
     "course": "CS1234",
-    "lessons": [
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   },
-
-
   {
-    "_id": "ENVR1113",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
+    "_id": "quiz124",
     "course": "CS1234",
-    "lessons": [
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   },
-
-
-
   {
-    "_id": "CS3343",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
+    "_id": "quiz125",
     "course": "CS1234",
-    "lessons": [
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   },
-
-
-
   {
-    "_id": "DS2236",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
-    "course": "CS1234",
-    "lessons": [
+    "_id": "quiz129",
+    "course": "ENVR1111",
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   },
-
-
-
-
-
-
   {
-    "_id": "PHIL4225",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
-    "course": "CS1234",
-    "lessons": [
+    "_id": "quiz130",
+    "course": "ENVR1111",
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   },
-
-
-
-
-
-
-
-
   {
-    "_id": "CS1122",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
-    "course": "CS1234",
-    "lessons": [
+    "_id": "quiz131",
+    "course": "ENVR1111",
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   },
-
-
-
-
-
-
-
   {
-    "_id": "DS3141",
-    "name": "Assignment Quizzes",
-    "description": "This course provides an intro to full stack software developer.",
-    "course": "CS1234",
-    "lessons": [
+    "_id": "quiz132",
+    "course": "DS2233",
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
       {
-        "_id": "L101",
-        "name": "Quiz 1: Intro to the course",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
       },
       {
-        "_id": "L102",
-        "name": "Quiz 2: Learn what is Web Development",
-        "description": "Basic principles of web development.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 3: CSS",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 4: HTML",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 5: NODE",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
-      },
-      {
-        "_id": "L101",
-        "name": "Quiz 6: FA25",
-        "description": "Introductory lesson to the course logistics and materials.",
-        "module": "M101"
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
       }
-    ]
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz133",
+    "course": "DS2233",
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz134",
+    "course": "DS2233",
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz135",
+    "course": "CS3341",
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz136",
+    "course": "CS3341",
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz137",
+    "course": "CS3341",
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz138",
+    "course": "PHIL4223",
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz139",
+    "course": "PHIL4223",
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz140",
+    "course": "PHIL4223",
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz141",
+    "course": "CS1122",
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz142",
+    "course": "CS1122",
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz143",
+    "course": "CS1122",
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz144",
+    "course": "DS3141",
+    "name": "Midterm Review Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-03-10T23:59:00",
+    "due_date": "2025-03-05T23:59:00",
+    "points": 50,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz145",
+    "course": "DS3141",
+    "name": "CSS & HTML Quiz",
+    "published": false,
+    "available_date": "2025-03-01T09:00:00",
+    "available_until": "2025-12-20T23:59:00",
+    "due_date": "2025-12-25T23:59:00",
+    "points": 100,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 50
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 50
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
+  },
+  {
+    "_id": "quiz146",
+    "course": "DS3141",
+    "name": "Q3 - NODE JS",
+    "published": false,
+    "available_date": "2026-03-01T09:00:00",
+    "available_until": "2026-03-10T23:59:00",
+    "due_date": "2026-03-05T23:59:00",
+    "points": 10,
+    "questions": [
+      {
+        "questionId": "q1",
+        "type": "multiple_choice",
+        "title": "What is React?",
+        "points": 5
+      },
+      {
+        "questionId": "q2",
+        "type": "true_false",
+        "title": "JavaScript is single-threaded.",
+        "points": 5
+      }
+    ],
+    "num_questions": 2,
+    "student_scores": {
+      "12345": {
+        "last_attempt_score": 42
+      },
+      "67890": {
+        "last_attempt_score": 48
+      }
+    }
   }
 ]
