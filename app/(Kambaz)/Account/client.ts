@@ -13,7 +13,7 @@ export const signin = async (credentials: any) => {
     return response.data;
 };
 export const profile = async () => {
-    const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
+    const response = await axiosWithCredentials.get(`${USERS_API}/profile`);
     return response.data;
 };
 export const signup = async (user: any) => {
@@ -30,7 +30,7 @@ export const signout = async () => {
 };
 export const findUsersByRole = async (role: string) => {
     const response = await
-        axios.get(`${USERS_API}?role=${role}`);
+        axiosWithCredentials.get(`${USERS_API}?role=${role}`);
     return response.data;
 };
 export const findUsersByPartialName = async (name: string) => {

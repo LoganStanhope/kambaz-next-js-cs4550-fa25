@@ -1,27 +1,45 @@
-import { FaCheckCircle, FaCircle } from "react-icons/fa";
+import {FaCheckCircle, FaCircle} from "react-icons/fa";
+import {CgUnavailable} from "react-icons/cg";
+import {Button} from "react-bootstrap";
+import React, {useState} from "react";
 
-type GreenCheckmarkProps = {
-    enabled?: boolean; // optional, defaults to true
-};
-
-export default function GreenCheckmark({ enabled = true }: GreenCheckmarkProps) {
-    // Determine styles based on enabled
-    const checkStyle = {
-        top: "2px",
-        color: enabled ? "green" : "green",
-        opacity: enabled ? 1 : 0.4,
-        cursor: enabled ? "pointer" : "not-allowed",
-    };
-
-    const circleStyle = {
-        color: enabled ? "white" : "#f0f0f0",
-        opacity: enabled ? 1 : 0.3,
-    };
-
-    return (
-        <span className="me-1 position-relative">
-            <FaCheckCircle style={checkStyle} className="me-1 position-absolute fs-5" />
-            <FaCircle style={circleStyle} className="me-1 fs-6" />
-        </span>
-    );
+interface GreenCheckmarkProps {
+    enable?: boolean;
 }
+
+export default function GreenCheckmark({enable}: GreenCheckmarkProps) {
+    const [isEnabled, setIsEnabled] = useState(enable === undefined || enable);
+
+    const toggle = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIsEnabled(!isEnabled);
+    };
+
+    if (enable === undefined || enable || isEnabled) {
+        return (
+            <span className="me-1 position-relative">
+      <FaCheckCircle style={{top: "2px"}} className="text-success me-1 position-absolute fs-5"/>
+      <FaCircle className="text-white me-1 fs-6"/>
+    </span>
+        );
+    } else {
+        return (
+            <Button
+                style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                }}
+                onClick={(e) => {
+                    toggle(e);
+                    e.stopPropagation();
+                    e.preventDefault();
+                }}
+            >
+                <CgUnavailable className="fs-2 text-danger" />
+            </Button>
+        );
+    }
+}
+
+

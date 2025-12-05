@@ -24,11 +24,8 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
+      "123": {
         "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
       }
     }
   },
@@ -57,12 +54,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -90,12 +81,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -123,12 +108,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -156,12 +135,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -189,12 +162,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -222,12 +189,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -255,12 +216,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -288,12 +243,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -321,12 +270,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -354,12 +297,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -387,12 +324,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -420,12 +351,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -453,12 +378,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -486,12 +405,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -519,12 +432,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -552,12 +459,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -585,12 +486,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -618,12 +513,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -651,12 +540,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   },
   {
@@ -684,12 +567,6 @@
     ],
     "num_questions": 2,
     "student_scores": {
-      "12345": {
-        "last_attempt_score": 42
-      },
-      "67890": {
-        "last_attempt_score": 48
-      }
     }
   }
 ]

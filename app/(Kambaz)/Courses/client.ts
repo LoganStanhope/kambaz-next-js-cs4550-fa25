@@ -4,6 +4,7 @@ const axiosWithCredentials = axios.create({withCredentials: true});
 const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER || "http://localhost:4000";
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
+const QUIZZES_API = `${HTTP_SERVER}/api/quizzes`;
 const MODULES_API = `${HTTP_SERVER}/api/modules`;
 const ENROLLMENTS_API = `${HTTP_SERVER}/api/dashboard`;
 
@@ -59,7 +60,7 @@ export const deleteModule = async (courseId: string, moduleId: string) => {
 };
 
 export const updateModule = async (courseId: string, module: any) => {
-    const { data } = await axios.put(
+    const {data} = await axios.put(
         `${COURSES_API}/${courseId}/modules/${module._id}`,
         module
     );
@@ -74,9 +75,34 @@ export const unenrollFromCourse = async (userId: string, courseId: string) => {
     return response.data;
 };
 export const findUsersForCourse = async (courseId: string) => {
-    const response = await axios.get(`${COURSES_API}/${courseId}/users`);
+    const response = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/users`);
     return response.data;
 };
+export async function fetchQuizzes(courseId: string | Array<string> | undefined) {
+    const res = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes`);
+    return res.data;
+}
+
+export async function fetchQuiz(courseId: string | Array<string> | undefined, quizId: string | Array<string> | undefined) {
+    const res = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes/${quizId}`);
+    return res.data;
+}
+
+export async function saveQuiz(courseId: string | Array<string> | undefined, quizId: string | Array<string> | undefined, data: any) {
+    if (quizId) {
+        const response = await axios.put(`${COURSES_API}/${courseId}/quizzes/${quizId}`, data);
+        return response.data;
+    } else {
+        const response = await axios.post(`${COURSES_API}/${courseId}/quizzes`, data);
+        return response.data;
+    }
+}
+
+export async function deleteQuiz(courseId: string | Array<string> | undefined, quizId: string | string[]) {
+    const response = await axiosWithCredentials.delete(`${COURSES_API}/${courseId}/quizzes/${quizId}`);
+    return response.data;
+}
+
 
 
 
