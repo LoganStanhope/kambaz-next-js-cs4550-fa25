@@ -25,7 +25,8 @@ export default function QuizDetails() {
   const [quiz, setQuiz] = useState<any>(null);
   const [quizState, setQuizState] = useState<any>(null);
   const currentUserRole = useSelector(
-    (state: RootState) => state.accountReducer.currentUser?.role
+      // @ts-expect-error because it complains about accessing object
+      (state: RootState) => state.accountReducer.currentUser?.role
   );
   const isFaculty = currentUserRole != "STUDENT";
   const dispatch = useDispatch();
