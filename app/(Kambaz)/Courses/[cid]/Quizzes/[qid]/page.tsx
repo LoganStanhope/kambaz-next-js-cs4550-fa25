@@ -24,7 +24,6 @@ export default function QuizDetails() {
   const pathname = usePathname();
   const [quiz, setQuiz] = useState<any>(null);
   const [quizState, setQuizState] = useState<any>(null);
-  // @ts-expect-error because it complains about accessing role in this way
   const currentUserRole = useSelector(
     (state: RootState) => state.accountReducer.currentUser?.role
   );
