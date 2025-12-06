@@ -104,6 +104,22 @@ export async function deleteQuiz(courseId: string | Array<string> | undefined, q
 }
 
 
+export async function fetchQuestions(courseId: string | string[], quizId: string | string[]) {
+  const res = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes/${quizId}/questions`);
+  return res.data;
+}
+
+export async function createQuestion(courseId: string | string[], quizId: string | string[], data: any) {
+  const res = await axiosWithCredentials.post(`${COURSES_API}/${courseId}/quizzes/${quizId}/questions`, data);
+  return res.data;
+}
+
+export async function updateQuestion(courseId: string | string[], quizId: string | string[], questionId: string | string[], data: any) {
+  const res = await axiosWithCredentials.put(`${COURSES_API}/${courseId}/quizzes/${quizId}/questions/${questionId}`, data);
+  return res.data;
+}
+
+
 
 
 
