@@ -119,6 +119,30 @@ export async function updateQuestion(courseId: string | string[], quizId: string
   return res.data;
 }
 
+// Student quiz attempt functions
+export async function submitQuizAttempt(courseId: string | string[], quizId: string | string[], studentId: string, answers: Record<string, any>) {
+  const res = await axiosWithCredentials.post(`${COURSES_API}/${courseId}/quizzes/${quizId}/attempts`, {
+    studentId,
+    answers
+  });
+  return res.data;
+}
+
+export async function getStudentAttempt(courseId: string | string[], quizId: string | string[], studentId: string) {
+  const res = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes/${quizId}/attempts/${studentId}`);
+  return res.data;
+}
+
+export async function canStudentTakeQuiz(courseId: string | string[], quizId: string | string[], studentId: string) {
+  const res = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes/${quizId}/can-take/${studentId}`);
+  return res.data;
+}
+
+export async function getStudentAttemptCount(courseId: string | string[], quizId: string | string[], studentId: string) {
+  const res = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/quizzes/${quizId}/attempt-count/${studentId}`);
+  return res.data;
+}
+
 
 
 

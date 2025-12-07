@@ -11,24 +11,84 @@ import {IoMdArrowDropdown} from "react-icons/io";
 import {RxRocket} from "react-icons/rx";
 import GreenCheckmark from "@/app/(Kambaz)/Courses/[cid]/Modules/GreenCheckmark";
 import {IoEllipsisVertical} from "react-icons/io5";
-import {fetchQuizzes, deleteQuiz, saveQuiz} from "@/app/(Kambaz)/Courses/client";
+import {fetchQuizzes, deleteQuiz, saveQuiz, getStudentAttemptCount} from "@/app/(Kambaz)/Courses/client";
+import {RootState} from "@/app/(Kambaz)/store";
 
 export default function Quizzes() {
     const {cid} = useParams(); // current course id
     const [quizzes, setQuizzes] = useState<any[]>([]);
     const currentUserId = useSelector((state: any) => state.accountReducer.currentUser?._id);
+    // @ts-expect-error because it complains about accessing role in this way
+    const currentUserRole = useSelector((state: RootState) => state.accountReducer.currentUser?.role);
+    const isFaculty = currentUserRole != 'STUDENT';
     const router = useRouter();
 
     // Side panel states
     const [selectedQuiz, setSelectedQuiz] = useState<any | null>(null);
     const [showPanel, setShowPanel] = useState(false);
+    // Track attempt counts for each quiz (for students)
+    const [quizAttemptCounts, setQuizAttemptCounts] = useState<Record<string, number>>({});
 
     useEffect(() => {
         if (!cid) return;
         fetchQuizzes(cid)
-            .then(setQuizzes)
+            .then(async (fetchedQuizzes) => {
+                // Filter out unpublished quizzes for students
+                const filteredQuizzes = isFaculty 
+                    ? fetchedQuizzes 
+                    : fetchedQuizzes.filter((q: any) => q.published === true);
+                
+                setQuizzes(filteredQuizzes);
+                
+                // For students, fetch attempt counts for each quiz
+                if (!isFaculty && currentUserId) {
+                    const counts: Record<string, number> = {};
+                    for (const quiz of filteredQuizzes) {
+                        try {
+                            const result = await getStudentAttemptCount(cid as string, quiz._id, currentUserId);
+                            // The API returns { count: number }, extract the count
+                            const count = typeof result === 'object' && result !== null && 'count' in result 
+                                ? result.count 
+                                : (typeof result === 'number' ? result : 0);
+                            counts[quiz._id] = count;
+                        } catch (error: any) {
+                            if (error?.response?.status !== 404) {
+                                console.error(`Failed to get attempt count for quiz ${quiz._id}:`, error);
+                            }
+                            counts[quiz._id] = 0;
+                        }
+                    }
+                    setQuizAttemptCounts(counts);
+                }
+            })
             .catch(err => console.error("Failed to load quizzes", err));
-    }, [cid]);
+    }, [cid, isFaculty, currentUserId]);
+
+    // Listen for quiz attempt started events to update attempt counts
+    useEffect(() => {
+        if (isFaculty || !currentUserId) return;
+        
+        const handleQuizAttemptStarted = (event: Event) => {
+            const customEvent = event as CustomEvent<{ quizId: string; courseId: string }>;
+            const { quizId, courseId } = customEvent.detail;
+            if (courseId !== cid) return;
+            
+            // Increment the attempt count for this quiz
+            setQuizAttemptCounts(prev => {
+                const currentCount = prev[quizId] || 0;
+                return {
+                    ...prev,
+                    [quizId]: currentCount + 1
+                };
+            });
+        };
+        
+        window.addEventListener('quizAttemptStarted', handleQuizAttemptStarted);
+        
+        return () => {
+            window.removeEventListener('quizAttemptStarted', handleQuizAttemptStarted);
+        };
+    }, [cid, isFaculty, currentUserId]);
 
     function getAvailability(q: any) {
         const now = new Date();
@@ -64,12 +124,62 @@ export default function Quizzes() {
             latestScoreText = `Score: ${quiz.student_scores[currentUserId].last_attempt_score}`;
         }
 
+        // Determine attempts text
+        let attemptsText = "";
+        const multipleAttempts = quiz.multipleAttempts || quiz.multiple_attempts;
+        if (multipleAttempts === 'No' || multipleAttempts === false) {
+            attemptsText = "1 Attempt Allowed";
+        } else if (multipleAttempts === 'Yes' || multipleAttempts === true) {
+            const howManyAttempts = quiz.howManyAttempts || quiz.how_many_attempts;
+            if (howManyAttempts && howManyAttempts > 0) {
+                attemptsText = `${howManyAttempts} Attempt${howManyAttempts > 1 ? 's' : ''} Allowed`;
+            } else {
+                attemptsText = "Unlimited Attempts";
+            }
+        } else {
+            // Default to 1 attempt if not specified
+            attemptsText = "1 Attempt Allowed";
+        }
+
+        // Calculate remaining attempts for students
+        let remainingAttemptsText = "";
+        if (!isFaculty && currentUserId) {
+            // Get the current attempt count from state (which updates in real-time via event listener)
+            const attemptCount = quizAttemptCounts[quiz._id] !== undefined 
+                ? (typeof quizAttemptCounts[quiz._id] === 'number' ? quizAttemptCounts[quiz._id] : 0)
+                : 0;
+            const multipleAttempts = quiz.multipleAttempts || quiz.multiple_attempts;
+            // Convert howManyAttempts to number if it's a string
+            const howManyAttemptsRaw = quiz.howManyAttempts || quiz.how_many_attempts;
+            const howManyAttempts = howManyAttemptsRaw ? Number(howManyAttemptsRaw) : null;
+            
+            if (multipleAttempts === 'No' || multipleAttempts === false) {
+                // Single attempt only
+                const remaining = attemptCount > 0 ? 0 : 1;
+                remainingAttemptsText = ` | ${remaining} Number of Attempts Left`;
+            } else if (multipleAttempts === 'Yes' || multipleAttempts === true) {
+                if (howManyAttempts && !isNaN(howManyAttempts) && howManyAttempts > 0) {
+                    const remaining = Math.max(0, howManyAttempts - attemptCount);
+                    remainingAttemptsText = ` | ${remaining} Number of Attempts Left`;
+                } else {
+                    // Unlimited attempts - don't show remaining
+                    remainingAttemptsText = "";
+                }
+            } else {
+                // Default case: treat as single attempt
+                const remaining = attemptCount > 0 ? 0 : 1;
+                remainingAttemptsText = ` | ${remaining} Number of Attempts Left`;
+            }
+        }
+
         return (
             <p className="mb-0">
                 <span style={{color: 'red'}}> {availability} </span> |{' '}
                 <b> Due </b> {formatDate(quiz.due_date)} | {quiz.points}{' '}pts | {quiz.num_questions}{' '}Questions
                 |{' '}
                 {latestScoreText}
+                {attemptsText && ` | ${attemptsText}`}
+                {remainingAttemptsText}
             </p>
         );
     }
@@ -83,19 +193,21 @@ export default function Quizzes() {
                     </InputGroupText>
                     <FormControl size="lg" type="search" placeholder="Search for Quiz" id="wd-search"/>
                 </InputGroup>
-                <div>
+                {isFaculty && (
                     <div>
-                        <Button variant="secondary" size="lg" className="me-1 float-end" id="wd-add-assignment-group">
-                            <BsThreeDotsVertical/>
-                        </Button>
-                        <Button
-                            variant="danger" size="lg" className="me-1 float-end" id="wd-add-assignment"
-                            onClick={handleAddQuiz}
-                        >
-                            + Quiz
-                        </Button>
+                        <div>
+                            <Button variant="secondary" size="lg" className="me-1 float-end" id="wd-add-assignment-group">
+                                <BsThreeDotsVertical/>
+                            </Button>
+                            <Button
+                                variant="danger" size="lg" className="me-1 float-end" id="wd-add-assignment"
+                                onClick={handleAddQuiz}
+                            >
+                                + Quiz
+                            </Button>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
             <br/>
             <hr/>
@@ -106,7 +218,7 @@ export default function Quizzes() {
                     <div className="wd-title p-4 ps-2 bg-secondary d-flex justify-content-between">
                         <div>
                             <IoMdArrowDropdown className="me-2"/>
-                            Assignment Quizzes
+                            Quizzes
                         </div>
                     </div>
                     <ListGroup className="wd-lessons rounded-0">
@@ -125,15 +237,17 @@ export default function Quizzes() {
                                         {formatQuizText(q)}
                                         <div className="d-flex align-items-center">
                                             <GreenCheckmark enable={q.published} />
-                                            <IoEllipsisVertical
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    e.preventDefault();
-                                                    setSelectedQuiz(q);
-                                                    setShowPanel(true);
-                                                }}
-                                                className="fs-4"
-                                            />
+                                            {isFaculty && (
+                                                <IoEllipsisVertical
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        e.preventDefault();
+                                                        setSelectedQuiz(q);
+                                                        setShowPanel(true);
+                                                    }}
+                                                    className="fs-4"
+                                                />
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -157,6 +271,16 @@ export default function Quizzes() {
                         }}
                     >
                         Edit Quiz
+                    </Button>
+
+                    <Button
+                        variant="info"
+                        onClick={() => {
+                            router.push(`/Courses/${cid}/Quizzes/${selectedQuiz?._id}/Preview`);
+                            setShowPanel(false);
+                        }}
+                    >
+                        Preview Quiz
                     </Button>
 
                     <Button
