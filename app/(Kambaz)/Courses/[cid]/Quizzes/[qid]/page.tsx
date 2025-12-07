@@ -72,6 +72,7 @@ export default function QuizDetails() {
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [accessCodeInput, setAccessCodeInput] = useState("");
     const [submissionResult, setSubmissionResult] = useState<any>(null);
     const [quizQuestions, setQuizQuestions] = useState<any[]>([]);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null); // seconds
@@ -198,18 +199,26 @@ export default function QuizDetails() {
                 );
                 setCanTake(canTakeResult);
 
-                // attempt count
+                // Attempts left
+                const left = (canTakeResult as any).attemptsLeft;
+                if (left === null || left === undefined) {
+                    setRemainingAttempts(null);
+                } else {
+                    const n = Number(left);
+                    setRemainingAttempts(Number.isNaN(n) ? null : n);
+                }
+
                 try {
-                    const result = await getStudentAttemptCount(
+                    const countRes = await getStudentAttemptCount(
                         cid as string,
                         qid as string,
                         currentUser._id
                     );
                     const count =
-                        typeof result === "object" && result !== null && "count" in result
-                            ? (result as any).count
-                            : typeof result === "number"
-                                ? result
+                        typeof countRes === "object" && countRes !== null && "count" in countRes
+                            ? (countRes as any).count
+                            : typeof countRes === "number"
+                                ? countRes
                                 : 0;
                     setAttemptCount(count);
                 } catch (error: any) {
@@ -217,7 +226,6 @@ export default function QuizDetails() {
                     setAttemptCount(0);
                 }
 
-                // last attempt
                 let attempt: any = null;
                 try {
                     attempt = await getStudentAttempt(
@@ -233,45 +241,10 @@ export default function QuizDetails() {
                     setHasAttempt(false);
                 }
 
-                const multipleAttempts =
-                    quizState?.multipleAttempts || quiz?.multipleAttempts;
-                const howManyAttemptsRaw =
-                    quizState?.howManyAttempts || quiz?.howManyAttempts;
-                const howManyAttempts = howManyAttemptsRaw
-                    ? Number(howManyAttemptsRaw)
-                    : null;
-                const validAttemptCount =
-                    typeof attemptCount === "number" && !isNaN(attemptCount)
-                        ? attemptCount
-                        : 0;
-
-                let remaining: number | null;
-
-                if (multipleAttempts === "No" || multipleAttempts === false) {
-                    remaining = attempt ? 0 : 1;
-                } else if (multipleAttempts === "Yes" || multipleAttempts === true) {
-                    if (howManyAttempts && !isNaN(howManyAttempts) && howManyAttempts > 0) {
-                        const calculated = howManyAttempts - validAttemptCount;
-                        remaining = isNaN(calculated)
-                            ? null
-                            : Math.max(0, calculated);
-                    } else {
-                        remaining = null; // unlimited
-                    }
-                } else {
-                    remaining = attempt ? 0 : 1;
-                }
-
-                setRemainingAttempts(remaining);
-
-                // auto-show results if no attempts left
-                if (remaining === 0 && attempt && !hasStarted && !isSubmitted) {
-                    setSubmissionResult(attempt);
-                    setIsSubmitted(true);
-                    setHasStarted(false);
-                } else if (
+                // if no attempts left but we have an attempt, auto-show results
+                if (
+                    (left === 0 || canTakeResult.canTake === false) &&
                     attempt &&
-                    multipleAttempts === "No" &&
                     !hasStarted &&
                     !isSubmitted
                 ) {
@@ -303,7 +276,6 @@ export default function QuizDetails() {
         isSubmitted,
         isLoading,
         quizState,
-        attemptCount,
     ]);
 
     // ---------- Timer ----------
@@ -416,6 +388,13 @@ export default function QuizDetails() {
     };
 
     const handleStart = async () => {
+        if (quizState?.accessCode && quizState.accessCode.trim() !== "") {
+            if (!accessCodeInput || accessCodeInput.trim() !== quizState.accessCode.trim()) {
+                alert("Incorrect access code.");
+                return;
+            }
+        }
+
         if (canTake && !canTake.canTake) {
             alert(canTake.reason || "You cannot take this quiz at this time.");
             return;
@@ -473,13 +452,6 @@ export default function QuizDetails() {
                 if (newRemaining !== null && newRemaining <= 0) {
                     alert("You have reached the maximum number of attempts for this quiz.");
                     return;
-                }
-
-                if (newRemaining !== null && newRemaining > 0) {
-                    setRemainingAttempts(newRemaining - 1);
-                    setAttemptCount((prev) => prev + 1);
-                } else {
-                    setRemainingAttempts(newRemaining);
                 }
 
                 if (typeof window !== "undefined") {
@@ -548,27 +520,43 @@ export default function QuizDetails() {
 
         setIsSubmitting(true);
         try {
-            await submitQuizAttempt(
+            // 1. Submit the attempt
+            const submitResult = await submitQuizAttempt(
                 cid as string,
                 qid as string,
                 currentUser._id,
                 answers
             );
 
-            await new Promise((resolve) => setTimeout(resolve, 500));
-
-            const attempt = await getStudentAttempt(
-                cid as string,
-                qid as string,
-                currentUser._id
-            );
-            if (!attempt) {
-                throw new Error("Failed to retrieve quiz attempt after submission");
+            // 2. Try to fetch the stored attempt from backend
+            let attempt: any = null;
+            try {
+                attempt = await getStudentAttempt(
+                    cid as string,
+                    qid as string,
+                    currentUser._id
+                );
+            } catch (error: any) {
+                // If backend says "No attempt found" (404), don't treat that as fatal.
+                // Fall back to whatever submitQuizAttempt returned (if it includes the attempt).
+                if (error?.response?.status === 404) {
+                    attempt = submitResult;
+                } else {
+                    // real error, rethrow so outer catch handles it
+                    throw error;
+                }
             }
 
-            setSubmissionResult(attempt);
-            setIsSubmitted(true);
+            if (!attempt) {
+                // No attempt object from either route; treat as success but without detailed breakdown
+                setIsSubmitted(true);
+                setSubmissionResult(null);
+            } else {
+                setSubmissionResult(attempt);
+                setIsSubmitted(true);
+            }
 
+            // 3. Refresh attempt count, canTake, remainingAttempts as before
             try {
                 const newCountResult = await getStudentAttemptCount(
                     cid as string,
@@ -592,32 +580,13 @@ export default function QuizDetails() {
                 );
                 setCanTake(canTakeResult);
 
-                const multipleAttempts =
-                    quizState?.multipleAttempts || quiz?.multipleAttempts;
-                const howManyAttemptsRaw =
-                    quizState?.howManyAttempts || quiz?.howManyAttempts;
-                const howManyAttempts = howManyAttemptsRaw
-                    ? Number(howManyAttemptsRaw)
-                    : null;
-                const validAttemptCount =
-                    typeof newCount === "number" && !isNaN(newCount) ? newCount : 0;
-
-                let newRemaining: number | null;
-                if (multipleAttempts === "No" || multipleAttempts === false) {
-                    newRemaining = 0;
-                } else if (multipleAttempts === "Yes" || multipleAttempts === true) {
-                    if (howManyAttempts && !isNaN(howManyAttempts) && howManyAttempts > 0) {
-                        const calculated = howManyAttempts - validAttemptCount;
-                        newRemaining = isNaN(calculated)
-                            ? null
-                            : Math.max(0, calculated);
-                    } else {
-                        newRemaining = null;
-                    }
+                const left = (canTakeResult as any).attemptsLeft;
+                if (left === null || left === undefined) {
+                    setRemainingAttempts(null);
                 } else {
-                    newRemaining = 0;
+                    const n = Number(left);
+                    setRemainingAttempts(Number.isNaN(n) ? null : n);
                 }
-                setRemainingAttempts(newRemaining);
 
                 if (typeof window !== "undefined") {
                     window.dispatchEvent(
@@ -1492,6 +1461,19 @@ export default function QuizDetails() {
                                         </Card.Body>
                                     </Card>
 
+                                    {quizState.accessCode && quizState.accessCode.trim() !== "" && (
+                                        <div className="mb-3">
+                                            <FormLabel>Access Code</FormLabel>
+                                            <FormControl
+                                                type="text"
+                                                value={accessCodeInput}
+                                                onChange={(e) => setAccessCodeInput(e.target.value)}
+                                                placeholder="Enter access code to begin"
+                                                style={{ maxWidth: 260 }}
+                                            />
+                                        </div>
+                                    )}
+
                                     <div className="d-flex justify-content-end mb-3">
                                         {canTake ? (
                                             canTake.canTake ? (
@@ -1607,6 +1589,7 @@ export default function QuizDetails() {
 
                             {quizQuestions.length > 0 && (
                                 <div className="row">
+                                    {/* MAIN COLUMN */}
                                     <div className="col-md-9">
                                         <h3
                                             className="mb-2"
@@ -1619,253 +1602,525 @@ export default function QuizDetails() {
                                             style={{ borderTop: "1px solid #000", margin: 0 }}
                                         />
 
-                                        {quizQuestions[currentQuestionIndex] && (
-                                            <Card
-                                                className="mb-3"
-                                                style={{
-                                                    border: "2px solid #000",
-                                                    boxShadow: "none",
-                                                    backgroundColor: "#fff",
-                                                }}
-                                            >
-                                                <Card.Header
-                                                    className="d-flex justify-content-between align-items-center"
-                                                    style={{
-                                                        backgroundColor: "#e9ecef",
-                                                        borderBottom: "1px solid #000",
-                                                        padding: "1rem",
-                                                    }}
-                                                >
-                                                    <h5
-                                                        className="mb-0"
+                                        {quizState.oneQuestionAtATime === "Yes" ? (
+                                            // ---------- SINGLE QUESTION MODE (existing behavior) ----------
+                                            <>
+                                                {quizQuestions[currentQuestionIndex] && (
+                                                    <Card
+                                                        className="mb-3"
                                                         style={{
-                                                            fontSize: "1.1rem",
-                                                            fontWeight: "bold",
+                                                            border: "2px solid #000",
+                                                            boxShadow: "none",
+                                                            backgroundColor: "#fff",
                                                         }}
                                                     >
-                                                        Question {currentQuestionIndex + 1}
-                                                    </h5>
-                                                    <span
-                                                        style={{
-                                                            fontSize: "0.9rem",
-                                                            fontWeight: "500",
-                                                        }}
-                                                    >
-                            {quizQuestions[currentQuestionIndex].points} pts
-                          </span>
-                                                </Card.Header>
-                                                <Card.Body style={{ padding: "1.5rem" }}>
-                                                    {quizQuestions[currentQuestionIndex].title && (
-                                                        <div
-                                                            className="mb-2"
+                                                        <Card.Header
+                                                            className="d-flex justify-content-between align-items-center"
                                                             style={{
-                                                                fontSize: "1.1rem",
-                                                                fontWeight: 600,
+                                                                backgroundColor: "#e9ecef",
+                                                                borderBottom: "1px solid #000",
+                                                                padding: "1rem",
                                                             }}
                                                         >
-                                                            {quizQuestions[currentQuestionIndex].title}
-                                                        </div>
-                                                    )}
-                                                    {quizQuestions[currentQuestionIndex].questionHtml && (
-                                                        <div
-                                                            className="mb-4"
-                                                            style={{
-                                                                fontSize: "1rem",
-                                                                lineHeight: 1.6,
-                                                            }}
-                                                        >
-                                                            <div
-                                                                dangerouslySetInnerHTML={{
-                                                                    __html:
-                                                                    quizQuestions[currentQuestionIndex]
-                                                                        .questionHtml,
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                    {!quizQuestions[currentQuestionIndex].title &&
-                                                        !quizQuestions[currentQuestionIndex]
-                                                            .questionHtml && (
-                                                            <div
-                                                                className="mb-4"
+                                                            <h5
+                                                                className="mb-0"
                                                                 style={{
-                                                                    fontSize: "1rem",
-                                                                    lineHeight: 1.6,
-                                                                    color: "#999",
+                                                                    fontSize: "1.1rem",
+                                                                    fontWeight: "bold",
                                                                 }}
                                                             >
-                                                                No question content
-                                                            </div>
-                                                        )}
-
-                                                    {quizQuestions[currentQuestionIndex].type ===
-                                                        "TFQ" && (
-                                                            <Form>
-                                                                <hr
+                                                                Question {currentQuestionIndex + 1}
+                                                            </h5>
+                                                            <span
+                                                                style={{
+                                                                    fontSize: "0.9rem",
+                                                                    fontWeight: "500",
+                                                                }}
+                                                            >
+                                                                {quizQuestions[currentQuestionIndex].points}{" "}
+                                                                pts
+                                                            </span>
+                                                        </Card.Header>
+                                                        <Card.Body style={{ padding: "1.5rem" }}>
+                                                            {quizQuestions[currentQuestionIndex].title && (
+                                                                <div
+                                                                    className="mb-2"
                                                                     style={{
-                                                                        margin: "0.5rem 0",
-                                                                        borderTop: "1px solid #000",
+                                                                        fontSize: "1.1rem",
+                                                                        fontWeight: 600,
                                                                     }}
-                                                                />
-                                                                <Form.Check
-                                                                    type="radio"
-                                                                    label="True"
-                                                                    name={`question-${quizQuestions[currentQuestionIndex].questionId}`}
-                                                                    id={`${quizQuestions[currentQuestionIndex].questionId}-true`}
-                                                                    checked={
-                                                                        answers[
-                                                                            quizQuestions[currentQuestionIndex]
-                                                                                .questionId
-                                                                            ] === true
+                                                                >
+                                                                    {
+                                                                        quizQuestions[currentQuestionIndex]
+                                                                            .title
                                                                     }
-                                                                    onChange={() =>
-                                                                        handleAnswerChange(
-                                                                            quizQuestions[currentQuestionIndex]
-                                                                                .questionId,
-                                                                            true
-                                                                        )
-                                                                    }
-                                                                    className="mb-3"
-                                                                    style={{ fontSize: "1rem" }}
-                                                                />
-                                                                <hr
+                                                                </div>
+                                                            )}
+                                                            {quizQuestions[currentQuestionIndex]
+                                                                .questionHtml && (
+                                                                <div
+                                                                    className="mb-4"
                                                                     style={{
-                                                                        margin: "0.5rem 0",
-                                                                        borderTop: "1px solid #000",
+                                                                        fontSize: "1rem",
+                                                                        lineHeight: 1.6,
                                                                     }}
-                                                                />
-                                                                <Form.Check
-                                                                    type="radio"
-                                                                    label="False"
-                                                                    name={`question-${quizQuestions[currentQuestionIndex].questionId}`}
-                                                                    id={`${quizQuestions[currentQuestionIndex].questionId}-false`}
-                                                                    checked={
-                                                                        answers[
-                                                                            quizQuestions[currentQuestionIndex]
-                                                                                .questionId
-                                                                            ] === false
-                                                                    }
-                                                                    onChange={() =>
-                                                                        handleAnswerChange(
-                                                                            quizQuestions[currentQuestionIndex]
-                                                                                .questionId,
-                                                                            false
-                                                                        )
-                                                                    }
-                                                                    style={{ fontSize: "1rem" }}
-                                                                />
-                                                            </Form>
-                                                        )}
-
-                                                    {quizQuestions[currentQuestionIndex].type ===
-                                                        "MCQ" && (
-                                                            <Form>
-                                                                {quizQuestions[
-                                                                    currentQuestionIndex
-                                                                    ].choices?.map(
-                                                                    (choice: any, index: number) => (
-                                                                        <React.Fragment key={choice._id || index}>
-                                                                            <hr
-                                                                                style={{
-                                                                                    margin: "0.5rem 0",
-                                                                                    borderTop: "1px solid #000",
-                                                                                }}
-                                                                            />
-                                                                            <Form.Check
-                                                                                type="radio"
-                                                                                label={choice.text}
-                                                                                name={`question-${quizQuestions[currentQuestionIndex].questionId}`}
-                                                                                id={`${quizQuestions[currentQuestionIndex].questionId}-${choice._id}`}
-                                                                                checked={
-                                                                                    answers[
-                                                                                        quizQuestions[currentQuestionIndex]
-                                                                                            .questionId
-                                                                                        ] === choice._id ||
-                                                                                    answers[
-                                                                                        quizQuestions[currentQuestionIndex]
-                                                                                            .questionId
-                                                                                        ] === choice.text
-                                                                                }
-                                                                                onChange={() =>
-                                                                                    handleAnswerChange(
-                                                                                        quizQuestions[
-                                                                                            currentQuestionIndex
-                                                                                            ].questionId,
-                                                                                        choice._id || choice.text
-                                                                                    )
-                                                                                }
-                                                                                className={
-                                                                                    index <
-                                                                                    quizQuestions[currentQuestionIndex]
-                                                                                        .choices.length -
-                                                                                    1
-                                                                                        ? "mb-3"
-                                                                                        : ""
-                                                                                }
-                                                                                style={{ fontSize: "1rem" }}
-                                                                            />
-                                                                        </React.Fragment>
-                                                                    )
+                                                                >
+                                                                    <div
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html:
+                                                                            quizQuestions[
+                                                                                currentQuestionIndex
+                                                                                ].questionHtml,
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                            {!quizQuestions[currentQuestionIndex].title &&
+                                                                !quizQuestions[currentQuestionIndex]
+                                                                    .questionHtml && (
+                                                                    <div
+                                                                        className="mb-4"
+                                                                        style={{
+                                                                            fontSize: "1rem",
+                                                                            lineHeight: 1.6,
+                                                                            color: "#999",
+                                                                        }}
+                                                                    >
+                                                                        No question content
+                                                                    </div>
                                                                 )}
-                                                            </Form>
-                                                        )}
 
-                                                    {quizQuestions[currentQuestionIndex].type ===
-                                                        "FIBQ" && (
-                                                            <Form>
-                                                                <Form.Control
-                                                                    type="text"
-                                                                    value={
-                                                                        answers[
-                                                                            quizQuestions[currentQuestionIndex]
-                                                                                .questionId
-                                                                            ] || ""
-                                                                    }
-                                                                    onChange={(e) =>
-                                                                        handleAnswerChange(
-                                                                            quizQuestions[currentQuestionIndex]
-                                                                                .questionId,
-                                                                            e.target.value
+                                                            {quizQuestions[currentQuestionIndex].type ===
+                                                                "TFQ" && (
+                                                                    <Form>
+                                                                        <hr
+                                                                            style={{
+                                                                                margin: "0.5rem 0",
+                                                                                borderTop: "1px solid #000",
+                                                                            }}
+                                                                        />
+                                                                        <Form.Check
+                                                                            type="radio"
+                                                                            label="True"
+                                                                            name={`question-${quizQuestions[currentQuestionIndex].questionId}`}
+                                                                            id={`${quizQuestions[currentQuestionIndex].questionId}-true`}
+                                                                            checked={
+                                                                                answers[
+                                                                                    quizQuestions[
+                                                                                        currentQuestionIndex
+                                                                                        ].questionId
+                                                                                    ] === true
+                                                                            }
+                                                                            onChange={() =>
+                                                                                handleAnswerChange(
+                                                                                    quizQuestions[
+                                                                                        currentQuestionIndex
+                                                                                        ].questionId,
+                                                                                    true
+                                                                                )
+                                                                            }
+                                                                            className="mb-3"
+                                                                            style={{ fontSize: "1rem" }}
+                                                                        />
+                                                                        <hr
+                                                                            style={{
+                                                                                margin: "0.5rem 0",
+                                                                                borderTop: "1px solid #000",
+                                                                            }}
+                                                                        />
+                                                                        <Form.Check
+                                                                            type="radio"
+                                                                            label="False"
+                                                                            name={`question-${quizQuestions[currentQuestionIndex].questionId}`}
+                                                                            id={`${quizQuestions[currentQuestionIndex].questionId}-false`}
+                                                                            checked={
+                                                                                answers[
+                                                                                    quizQuestions[
+                                                                                        currentQuestionIndex
+                                                                                        ].questionId
+                                                                                    ] === false
+                                                                            }
+                                                                            onChange={() =>
+                                                                                handleAnswerChange(
+                                                                                    quizQuestions[
+                                                                                        currentQuestionIndex
+                                                                                        ].questionId,
+                                                                                    false
+                                                                                )
+                                                                            }
+                                                                            style={{ fontSize: "1rem" }}
+                                                                        />
+                                                                    </Form>
+                                                                )}
+
+                                                            {quizQuestions[currentQuestionIndex].type ===
+                                                                "MCQ" && (
+                                                                    <Form>
+                                                                        {quizQuestions[
+                                                                            currentQuestionIndex
+                                                                            ].choices?.map(
+                                                                            (
+                                                                                choice: any,
+                                                                                index: number
+                                                                            ) => (
+                                                                                <React.Fragment
+                                                                                    key={choice._id || index}
+                                                                                >
+                                                                                    <hr
+                                                                                        style={{
+                                                                                            margin: "0.5rem 0",
+                                                                                            borderTop:
+                                                                                                "1px solid #000",
+                                                                                        }}
+                                                                                    />
+                                                                                    <Form.Check
+                                                                                        type="radio"
+                                                                                        label={choice.text}
+                                                                                        name={`question-${quizQuestions[currentQuestionIndex].questionId}`}
+                                                                                        id={`${quizQuestions[currentQuestionIndex].questionId}-${choice._id}`}
+                                                                                        checked={
+                                                                                            answers[
+                                                                                                quizQuestions[
+                                                                                                    currentQuestionIndex
+                                                                                                    ]
+                                                                                                    .questionId
+                                                                                                ] ===
+                                                                                            choice._id ||
+                                                                                            answers[
+                                                                                                quizQuestions[
+                                                                                                    currentQuestionIndex
+                                                                                                    ]
+                                                                                                    .questionId
+                                                                                                ] ===
+                                                                                            choice.text
+                                                                                        }
+                                                                                        onChange={() =>
+                                                                                            handleAnswerChange(
+                                                                                                quizQuestions[
+                                                                                                    currentQuestionIndex
+                                                                                                    ]
+                                                                                                    .questionId,
+                                                                                                choice._id ||
+                                                                                                choice.text
+                                                                                            )
+                                                                                        }
+                                                                                        className={
+                                                                                            index <
+                                                                                            quizQuestions[
+                                                                                                currentQuestionIndex
+                                                                                                ].choices
+                                                                                                .length -
+                                                                                            1
+                                                                                                ? "mb-3"
+                                                                                                : ""
+                                                                                        }
+                                                                                        style={{
+                                                                                            fontSize: "1rem",
+                                                                                        }}
+                                                                                    />
+                                                                                </React.Fragment>
+                                                                            )
+                                                                        )}
+                                                                    </Form>
+                                                                )}
+
+                                                            {quizQuestions[currentQuestionIndex].type ===
+                                                                "FIBQ" && (
+                                                                    <Form>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            value={
+                                                                                answers[
+                                                                                    quizQuestions[
+                                                                                        currentQuestionIndex
+                                                                                        ].questionId
+                                                                                    ] || ""
+                                                                            }
+                                                                            onChange={(e) =>
+                                                                                handleAnswerChange(
+                                                                                    quizQuestions[
+                                                                                        currentQuestionIndex
+                                                                                        ].questionId,
+                                                                                    e.target.value
+                                                                                )
+                                                                            }
+                                                                            placeholder="Enter your answer"
+                                                                            style={{ fontSize: "1rem" }}
+                                                                        />
+                                                                    </Form>
+                                                                )}
+                                                        </Card.Body>
+                                                    </Card>
+                                                )}
+
+                                                <div className="d-flex justify-content-between gap-2 mb-3">
+                                                    <div>
+                                                        {currentQuestionIndex > 0 && (
+                                                            <Button
+                                                                variant="outline-secondary"
+                                                                onClick={() =>
+                                                                    setCurrentQuestionIndex(
+                                                                        (prev) => prev - 1
+                                                                    )
+                                                                }
+                                                            >
+                                                                ◂ Previous
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        {currentQuestionIndex <
+                                                            quizQuestions.length - 1 && (
+                                                                <Button
+                                                                    variant="secondary"
+                                                                    onClick={() =>
+                                                                        setCurrentQuestionIndex(
+                                                                            (prev) => prev + 1
                                                                         )
                                                                     }
-                                                                    placeholder="Enter your answer"
-                                                                    style={{ fontSize: "1rem" }}
-                                                                />
-                                                            </Form>
-                                                        )}
-                                                </Card.Body>
-                                            </Card>
+                                                                >
+                                                                    Next{" "}
+                                                                    <FaArrowRight className="ms-1" />
+                                                                </Button>
+                                                            )}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            // ---------- MULTI QUESTION MODE (all questions at once) ----------
+                                            <>
+                                                {quizQuestions.map(
+                                                    (q: any, index: number) => (
+                                                        <Card
+                                                            key={q.questionId}
+                                                            className="mb-3"
+                                                            style={{
+                                                                border: "2px solid #000",
+                                                                boxShadow: "none",
+                                                                backgroundColor: "#fff",
+                                                            }}
+                                                        >
+                                                            <Card.Header
+                                                                className="d-flex justify-content-between align-items-center"
+                                                                style={{
+                                                                    backgroundColor: "#e9ecef",
+                                                                    borderBottom:
+                                                                        "1px solid #000",
+                                                                    padding: "1rem",
+                                                                }}
+                                                            >
+                                                                <h5
+                                                                    className="mb-0"
+                                                                    style={{
+                                                                        fontSize: "1.1rem",
+                                                                        fontWeight: "bold",
+                                                                    }}
+                                                                >
+                                                                    Question {index + 1}
+                                                                </h5>
+                                                                <span
+                                                                    style={{
+                                                                        fontSize: "0.9rem",
+                                                                        fontWeight: "500",
+                                                                    }}
+                                                                >
+                                                                    {q.points} pts
+                                                                </span>
+                                                            </Card.Header>
+                                                            <Card.Body
+                                                                style={{ padding: "1.5rem" }}
+                                                            >
+                                                                {q.title && (
+                                                                    <div
+                                                                        className="mb-2"
+                                                                        style={{
+                                                                            fontSize: "1.1rem",
+                                                                            fontWeight: 600,
+                                                                        }}
+                                                                    >
+                                                                        {q.title}
+                                                                    </div>
+                                                                )}
+                                                                {q.questionHtml && (
+                                                                    <div
+                                                                        className="mb-4"
+                                                                        style={{
+                                                                            fontSize: "1rem",
+                                                                            lineHeight: 1.6,
+                                                                        }}
+                                                                    >
+                                                                        <div
+                                                                            dangerouslySetInnerHTML={{
+                                                                                __html: q.questionHtml,
+                                                                            }}
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                                {!q.title &&
+                                                                    !q.questionHtml && (
+                                                                        <div
+                                                                            className="mb-4"
+                                                                            style={{
+                                                                                fontSize: "1rem",
+                                                                                lineHeight: 1.6,
+                                                                                color: "#999",
+                                                                            }}
+                                                                        >
+                                                                            No question content
+                                                                        </div>
+                                                                    )}
+
+                                                                {q.type === "TFQ" && (
+                                                                    <Form>
+                                                                        <hr
+                                                                            style={{
+                                                                                margin: "0.5rem 0",
+                                                                                borderTop:
+                                                                                    "1px solid #000",
+                                                                            }}
+                                                                        />
+                                                                        <Form.Check
+                                                                            type="radio"
+                                                                            label="True"
+                                                                            name={`question-${q.questionId}`}
+                                                                            id={`${q.questionId}-true`}
+                                                                            checked={
+                                                                                answers[q.questionId] ===
+                                                                                true
+                                                                            }
+                                                                            onChange={() =>
+                                                                                handleAnswerChange(
+                                                                                    q.questionId,
+                                                                                    true
+                                                                                )
+                                                                            }
+                                                                            className="mb-3"
+                                                                            style={{
+                                                                                fontSize: "1rem",
+                                                                            }}
+                                                                        />
+                                                                        <hr
+                                                                            style={{
+                                                                                margin: "0.5rem 0",
+                                                                                borderTop:
+                                                                                    "1px solid #000",
+                                                                            }}
+                                                                        />
+                                                                        <Form.Check
+                                                                            type="radio"
+                                                                            label="False"
+                                                                            name={`question-${q.questionId}`}
+                                                                            id={`${q.questionId}-false`}
+                                                                            checked={
+                                                                                answers[q.questionId] ===
+                                                                                false
+                                                                            }
+                                                                            onChange={() =>
+                                                                                handleAnswerChange(
+                                                                                    q.questionId,
+                                                                                    false
+                                                                                )
+                                                                            }
+                                                                            style={{
+                                                                                fontSize: "1rem",
+                                                                            }}
+                                                                        />
+                                                                    </Form>
+                                                                )}
+
+                                                                {q.type === "MCQ" && (
+                                                                    <Form>
+                                                                        {q.choices?.map(
+                                                                            (
+                                                                                choice: any,
+                                                                                i: number
+                                                                            ) => (
+                                                                                <React.Fragment
+                                                                                    key={
+                                                                                        choice._id || i
+                                                                                    }
+                                                                                >
+                                                                                    <hr
+                                                                                        style={{
+                                                                                            margin:
+                                                                                                "0.5rem 0",
+                                                                                            borderTop:
+                                                                                                "1px solid #000",
+                                                                                        }}
+                                                                                    />
+                                                                                    <Form.Check
+                                                                                        type="radio"
+                                                                                        label={choice.text}
+                                                                                        name={`question-${q.questionId}`}
+                                                                                        id={`${q.questionId}-${choice._id}`}
+                                                                                        checked={
+                                                                                            answers[
+                                                                                                q
+                                                                                                    .questionId
+                                                                                                ] ===
+                                                                                            choice._id ||
+                                                                                            answers[
+                                                                                                q
+                                                                                                    .questionId
+                                                                                                ] ===
+                                                                                            choice.text
+                                                                                        }
+                                                                                        onChange={() =>
+                                                                                            handleAnswerChange(
+                                                                                                q.questionId,
+                                                                                                choice._id ||
+                                                                                                choice.text
+                                                                                            )
+                                                                                        }
+                                                                                        className={
+                                                                                            i <
+                                                                                            q.choices
+                                                                                                .length -
+                                                                                            1
+                                                                                                ? "mb-3"
+                                                                                                : ""
+                                                                                        }
+                                                                                        style={{
+                                                                                            fontSize:
+                                                                                                "1rem",
+                                                                                        }}
+                                                                                    />
+                                                                                </React.Fragment>
+                                                                            )
+                                                                        )}
+                                                                    </Form>
+                                                                )}
+
+                                                                {q.type === "FIBQ" && (
+                                                                    <Form>
+                                                                        <Form.Control
+                                                                            type="text"
+                                                                            value={
+                                                                                answers[
+                                                                                    q.questionId
+                                                                                    ] || ""
+                                                                            }
+                                                                            onChange={(e) =>
+                                                                                handleAnswerChange(
+                                                                                    q.questionId,
+                                                                                    e.target.value
+                                                                                )
+                                                                            }
+                                                                            placeholder="Enter your answer"
+                                                                            style={{
+                                                                                fontSize: "1rem",
+                                                                            }}
+                                                                        />
+                                                                    </Form>
+                                                                )}
+                                                            </Card.Body>
+                                                        </Card>
+                                                    )
+                                                )}
+                                            </>
                                         )}
 
-                                        <div className="d-flex justify-content-between gap-2 mb-3">
-                                            <div>
-                                                {currentQuestionIndex > 0 && (
-                                                    <Button
-                                                        variant="outline-secondary"
-                                                        onClick={() =>
-                                                            setCurrentQuestionIndex((prev) => prev - 1)
-                                                        }
-                                                    >
-                                                        ◂ Previous
-                                                    </Button>
-                                                )}
-                                            </div>
-                                            <div>
-                                                {currentQuestionIndex <
-                                                    quizQuestions.length - 1 && (
-                                                        <Button
-                                                            variant="secondary"
-                                                            onClick={() =>
-                                                                setCurrentQuestionIndex((prev) => prev + 1)
-                                                            }
-                                                        >
-                                                            Next <FaArrowRight className="ms-1" />
-                                                        </Button>
-                                                    )}
-                                            </div>
-                                        </div>
-
-                                        {/* bottom bar */}
+                                        {/* bottom bar (common to both modes) */}
                                         <div
                                             className="d-flex justify-content-between align-items-center p-3"
                                             style={{
@@ -1878,8 +2133,9 @@ export default function QuizDetails() {
                                             <div>
                                                 {lastSaved && (
                                                     <span className="text-muted">
-                            Quiz saved at {formatTime(lastSaved)}
-                          </span>
+                                                        Quiz saved at{" "}
+                                                        {formatTime(lastSaved)}
+                                                    </span>
                                                 )}
                                             </div>
                                             <Button
@@ -1888,53 +2144,75 @@ export default function QuizDetails() {
                                                 onClick={handleSubmit}
                                                 disabled={isSubmitting}
                                             >
-                                                {isSubmitting ? "Submitting..." : "Submit Quiz"}
+                                                {isSubmitting
+                                                    ? "Submitting..."
+                                                    : "Submit Quiz"}
                                             </Button>
                                         </div>
                                     </div>
 
+                                    {/* SIDEBAR */}
                                     <div className="col-md-3 mb-4">
-                                        <Card>
-                                            <Card.Header>
-                                                <h6 className="mb-0">Questions</h6>
-                                            </Card.Header>
-                                            <Card.Body className="p-0">
-                                                <ListGroup variant="flush">
-                                                    {quizQuestions.map((q: any, index: number) => {
-                                                        const answered =
-                                                            answers[q.questionId] !== null &&
-                                                            answers[q.questionId] !== "";
-                                                        return (
-                                                            <ListGroupItem
-                                                                key={q.questionId}
-                                                                action
-                                                                active={index === currentQuestionIndex}
-                                                                onClick={() => setCurrentQuestionIndex(index)}
-                                                                style={{
-                                                                    color: answered ? "inherit" : "#dc3545",
-                                                                    cursor: "pointer",
-                                                                    backgroundColor:
-                                                                        index === currentQuestionIndex
-                                                                            ? "#e7f3ff"
-                                                                            : "transparent",
-                                                                    borderLeft:
-                                                                        index === currentQuestionIndex
-                                                                            ? "4px solid #0d6efd"
-                                                                            : "none",
-                                                                }}
-                                                                className="d-flex align-items-center"
-                                                            >
-                                                                <FaQuestionCircle
-                                                                    className="me-2"
-                                                                    style={{ color: "#dc3545" }}
-                                                                />
-                                                                Question {index + 1}
-                                                            </ListGroupItem>
-                                                        );
-                                                    })}
-                                                </ListGroup>
-                                            </Card.Body>
-                                        </Card>
+                                        {quizState.oneQuestionAtATime === "Yes" && (
+                                            <Card>
+                                                <Card.Header>
+                                                    <h6 className="mb-0">Questions</h6>
+                                                </Card.Header>
+                                                <Card.Body className="p-0">
+                                                    <ListGroup variant="flush">
+                                                        {quizQuestions.map(
+                                                            (q: any, index: number) => {
+                                                                const answered =
+                                                                    answers[q.questionId] !==
+                                                                    null &&
+                                                                    answers[q.questionId] !==
+                                                                    "";
+                                                                return (
+                                                                    <ListGroupItem
+                                                                        key={q.questionId}
+                                                                        action
+                                                                        active={
+                                                                            index ===
+                                                                            currentQuestionIndex
+                                                                        }
+                                                                        onClick={() =>
+                                                                            setCurrentQuestionIndex(
+                                                                                index
+                                                                            )
+                                                                        }
+                                                                        style={{
+                                                                            color: answered
+                                                                                ? "inherit"
+                                                                                : "#dc3545",
+                                                                            cursor: "pointer",
+                                                                            backgroundColor:
+                                                                                index ===
+                                                                                currentQuestionIndex
+                                                                                    ? "#e7f3ff"
+                                                                                    : "transparent",
+                                                                            borderLeft:
+                                                                                index ===
+                                                                                currentQuestionIndex
+                                                                                    ? "4px solid #0d6efd"
+                                                                                    : "none",
+                                                                        }}
+                                                                        className="d-flex align-items-center"
+                                                                    >
+                                                                        <FaQuestionCircle
+                                                                            className="me-2"
+                                                                            style={{
+                                                                                color: "#dc3545",
+                                                                            }}
+                                                                        />
+                                                                        Question {index + 1}
+                                                                    </ListGroupItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                    </ListGroup>
+                                                </Card.Body>
+                                            </Card>
+                                        )}
 
                                         {remainingAttempts !== null &&
                                             !isNaN(remainingAttempts) && (
