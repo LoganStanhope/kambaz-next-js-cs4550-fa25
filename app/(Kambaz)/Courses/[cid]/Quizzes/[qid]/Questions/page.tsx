@@ -7,9 +7,10 @@ import {
   fetchQuestions,
   updateQuestion,
   createQuestion,
+  fetchQuiz,
 } from "../../../../../Courses/client";
 import { useRouter } from "next/navigation";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import QuestionItem from "./QuestionItem";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/(Kambaz)/store";
@@ -23,6 +24,10 @@ export default function QuizQuestionsPage() {
     null
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [quizPoints, setQuizPoints] = useState<number>(0);
+  const [showSavedModal, setShowSavedModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string>("");
+  const [modalTitle, setModalTitle] = useState<string>("");
   const { currentUser } = useSelector(
     (state: RootState) => state.accountReducer
   ) as any;
@@ -30,22 +35,34 @@ export default function QuizQuestionsPage() {
     currentUser?.role === "FACULTY" || currentUser?.role === "ADMIN";
 
   useEffect(() => {
-    const loadQuestions = async () => {
+    const loadData = async () => {
       try {
         setIsLoading(true);
         if (cid && qid) {
-          const data = await fetchQuestions(cid as string, qid as string);
-          setQuestions(data);
+          const [questionsData, quizData] = await Promise.all([
+            fetchQuestions(cid as string, qid as string).catch(() => []),
+            fetchQuiz(cid as string, qid as string).catch(() => null)
+          ]);
+          setQuestions(questionsData || []);
+          // Only set quiz points if it's a valid number greater than or equal to 0
+          const points = quizData?.points;
+          if (points !== undefined && points !== null && !isNaN(points) && points >= 0) {
+            setQuizPoints(points);
+          } else {
+            setQuizPoints(0);
+          }
         }
       } catch (error) {
-        console.error("Failed to load questions:", error);
+        console.error("Failed to load data:", error);
+        setQuestions([]);
+        setQuizPoints(0);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (cid && qid) {
-      loadQuestions();
+      loadData();
     }
   }, [cid, qid]);
 
@@ -53,22 +70,24 @@ export default function QuizQuestionsPage() {
     questions?.reduce((sum, q) => sum + (q.points || 0), 0) || 0;
 
   const handleAddQuestion = () => {
+    const newQuestionId = uuidv4();
     const newQuestion = {
-      questionId: uuidv4(),
+      questionId: newQuestionId,
       title: "New Question",
       type: "MCQ",
       points: 0,
       questionHtml: "",
       choices: [
-        { text: "Option 1", isCorrect: true },
-        { text: "Option 2", isCorrect: false },
-        { text: "Option 3", isCorrect: false },
-        { text: "Option 4", isCorrect: false },
+        { _id: uuidv4(), text: "Option 1", isCorrect: true },
+        { _id: uuidv4(), text: "Option 2", isCorrect: false },
+        { _id: uuidv4(), text: "Option 3", isCorrect: false },
+        { _id: uuidv4(), text: "Option 4", isCorrect: false },
       ],
       correctAnswer: "Option 1",
     };
 
     setQuestions([...questions, newQuestion]);
+    setEditingQuestionId(newQuestionId); // Automatically set new question to editing mode
   };
 
   const handleEditQuestion = (questionId: string) => {
@@ -93,6 +112,24 @@ export default function QuizQuestionsPage() {
 
   const handleSaveQuiz = async () => {
     if (!cid || !qid) return;
+    
+    // Validate that total question points equals quiz points (only if quiz points is set)
+    const totalQuestionPoints = questions.reduce((sum, q) => sum + (q.points || 0), 0);
+    
+    if (quizPoints > 0 && totalQuestionPoints !== quizPoints) {
+      setModalTitle("Validation Error");
+      setModalMessage(`The total points for all questions (${totalQuestionPoints}) must equal the quiz points (${quizPoints}) set in Details.`);
+      setShowSavedModal(true);
+      return;
+    }
+    
+    if (quizPoints <= 0) {
+      setModalTitle("Validation Error");
+      setModalMessage("Please set the quiz points in the Details tab before saving questions.");
+      setShowSavedModal(true);
+      return;
+    }
+    
     try {
       for (const question of questions) {
         if (question._id) {
@@ -122,8 +159,16 @@ export default function QuizQuestionsPage() {
       
       const data = await fetchQuestions(cid as string, qid as string);
       setQuestions(data);
+      
+      // Show success modal
+      setModalTitle("Quiz Saved");
+      setModalMessage("Your quiz has been saved successfully.");
+      setShowSavedModal(true);
     } catch (error) {
       console.error("Failed to save quiz:", error);
+      setModalTitle("Error");
+      setModalMessage("Failed to save quiz. Please try again.");
+      setShowSavedModal(true);
     }
   };
 
@@ -172,8 +217,15 @@ export default function QuizQuestionsPage() {
           Questions
         </button>
 
-        {/* Points Top-Right */}
-        <div className="ms-auto fw-bold">Points&nbsp;{totalPoints}</div>
+        {/* Points Top-Right - Show quiz points from Details */}
+        <div className="ms-auto fw-bold">
+          Points&nbsp;{totalPoints} / {quizPoints > 0 ? quizPoints : 'Not Set'}
+          {quizPoints > 0 && totalPoints !== quizPoints && (
+            <span className="text-danger ms-2" style={{fontSize: '0.9rem', fontWeight: 'normal'}}>
+              (Must equal {quizPoints})
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Questions List */}
@@ -222,6 +274,26 @@ export default function QuizQuestionsPage() {
           Save
         </Button>
       </div>
+
+      {/* Saved/Error Modal */}
+      <Modal show={showSavedModal} onHide={() => setShowSavedModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalTitle}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>{modalMessage}</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={() => {
+            setShowSavedModal(false);
+            if (modalTitle === "Quiz Saved") {
+              router.back();
+            }
+          }}>
+            OK
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
