@@ -34,7 +34,7 @@ export default function Assignments() {
     }, []);
 
     const handleAddAssignment = () => {
-        router.push(`/Courses/${cid}/Quizzes/Editor`);
+        router.push(`/Courses/${cid}/Assignments/Editor`);
     };
     function formatAssignmentText(assignment: any) {
         const formatDate = (dateStr: string) => {
