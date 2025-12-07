@@ -345,7 +345,34 @@ export default function QuizDetails() {
     ]);
 
     // ---------- helpers ----------
+    const validateDates = () => {
+        const { available_date, due_date, until_date } = quizState;
+
+        const a = available_date ? new Date(available_date) : null;
+        const d = due_date ? new Date(due_date) : null;
+        const u = until_date ? new Date(until_date) : null;
+
+        if (a && d && a > d) {
+            alert("Available date cannot be AFTER the due date.");
+            return false;
+        }
+
+        if (d && u && d > u) {
+            alert("Due date cannot be AFTER the until date.");
+            return false;
+        }
+
+        if (a && u && a > u) {
+            alert("Available date cannot be AFTER the until date.");
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSave = async () => {
+        if (!validateDates()) return;
+
         const updatedQuiz = {
             ...quizState,
             available_until: quizState.until_date,
@@ -365,6 +392,8 @@ export default function QuizDetails() {
     };
 
     const handleSaveAndPublish = async () => {
+        if (!validateDates()) return;
+
         const updatedQuiz = {
             ...quizState,
             available_until: quizState.until_date,
