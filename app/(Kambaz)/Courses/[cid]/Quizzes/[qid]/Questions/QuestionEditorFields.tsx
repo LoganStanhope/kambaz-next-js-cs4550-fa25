@@ -69,19 +69,22 @@ export default function QuestionEditorFields({
         </Col>
       </FormGroup>
 
-      {/* Description */}
+      {/* Question */}
       <FormGroup as={Row}>
         <FormLabel column sm={3}>
-          Question Description
+          Question
         </FormLabel>
         <Col sm={9}>
           <FormControl
             as="textarea"
-            rows={4}
+            rows={6}
             value={question.questionHtml || ""}
             onChange={(e) => onUpdate({ questionHtml: e.target.value })}
-            placeholder="Enter question description"
+            placeholder="Enter your question"
           />
+          <small className="text-muted d-block mt-1">
+            You can use basic HTML tags for formatting (e.g., &lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt;, &lt;p&gt;paragraph&lt;/p&gt;, &lt;br&gt;line break)
+          </small>
         </Col>
       </FormGroup>
     </div>

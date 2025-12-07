@@ -139,16 +139,49 @@ export default function QuestionItem({
         {/* Fill in the blank */}
         {isFibq && (
           <div className="mt-4">
-            <div className="mb-2">
-              {isFacultyOrAdmin && (
-                <>
-                  <span className="text-gray-700 me-2">Correct answer:</span>
-                  <span className="fw-semibold text-success">
-                    {question.correctAnswer || "Not set"}
-                  </span>
-                </>
-              )}
-            </div>
+            {isFacultyOrAdmin && question.correctAnswer && (
+              <div>
+                {Array.isArray(question.correctAnswer) &&
+                question.correctAnswer.length > 0 &&
+                typeof question.correctAnswer[0] === "object" ? (
+                  question.correctAnswer.map((blank: any, blankIndex: number) => (
+                    <div key={blank.blankId || blankIndex} className="mb-3">
+                      <span className="text-gray-700 fw-semibold">
+                        Blank {blankIndex + 1} - Possible answers:
+                      </span>
+                      <div className="mt-1">
+                        {blank.possibleAnswers && blank.possibleAnswers.length > 0 ? (
+                          blank.possibleAnswers.map((answer: string, i: number) => (
+                            <span key={i} className="badge bg-success me-1 mb-1">
+                              {answer || "(empty)"}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-muted">Not set</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="mb-2">
+                    <span className="text-gray-700 me-2">Correct answer:</span>
+                    {Array.isArray(question.correctAnswer) ? (
+                      <div className="mt-1">
+                        {question.correctAnswer.map((answer: string, i: number) => (
+                          <span key={i} className="badge bg-success me-1">
+                            {answer}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="fw-semibold text-success">
+                        {question.correctAnswer || "Not set"}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
