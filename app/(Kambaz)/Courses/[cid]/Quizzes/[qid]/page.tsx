@@ -711,49 +711,70 @@ export default function QuizDetails() {
 
     return (
         <div className="p-4">
-            {/* Quiz Tabs */}
-            <div
-                className="d-flex align-items-center border-bottom mb-3"
-                style={{ gap: "20px" }}
-            >
-                <button
-                    onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}`)}
-                    className={`btn btn-link p-0 ${
-                        !pathname.includes("Questions")
-                            ? "text-danger active-tab"
-                            : "text-secondary"
-                    }`}
-                    style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "500",
-                        textDecoration: "none",
-                        borderRadius: 0,
-                    }}
+            {/* Quiz Tabs - Only show for faculty */}
+            {isFaculty && (
+                <div
+                    className="d-flex align-items-center border-bottom mb-3"
+                    style={{ gap: "20px" }}
                 >
-                    Details
-                </button>
+                    <button
+                        onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}`)}
+                        className={`btn btn-link p-0 ${
+                            !pathname.includes("Questions") && !pathname.includes("Preview")
+                                ? "text-danger active-tab"
+                                : "text-secondary"
+                        }`}
+                        style={{
+                            fontSize: "1.2rem",
+                            fontWeight: "500",
+                            textDecoration: "none",
+                            borderRadius: 0,
+                        }}
+                    >
+                        Details
+                    </button>
 
-                <button
-                    onClick={() =>
-                        router.push(`/Courses/${cid}/Quizzes/${qid}/Questions`)
-                    }
-                    className={`btn btn-link p-0 ${
-                        pathname.includes("Questions")
-                            ? "text-danger active-tab"
-                            : "text-secondary"
-                    }`}
-                    style={{
-                        fontSize: "1.2rem",
-                        fontWeight: "500",
-                        textDecoration: "none",
-                        borderRadius: 0,
-                    }}
-                >
-                    Questions
-                </button>
-            </div>
+                    <button
+                        onClick={() =>
+                            router.push(`/Courses/${cid}/Quizzes/${qid}/Questions`)
+                        }
+                        className={`btn btn-link p-0 ${
+                            pathname.includes("Questions")
+                                ? "text-danger active-tab"
+                                : "text-secondary"
+                        }`}
+                        style={{
+                            fontSize: "1.2rem",
+                            fontWeight: "500",
+                            textDecoration: "none",
+                            borderRadius: 0,
+                        }}
+                    >
+                        Questions
+                    </button>
 
-            <h2>Quiz Details</h2>
+                    <button
+                        onClick={() =>
+                            router.push(`/Courses/${cid}/Quizzes/${qid}/Preview`)
+                        }
+                        className={`btn btn-link p-0 ${
+                            pathname.includes("Preview")
+                                ? "text-danger active-tab"
+                                : "text-secondary"
+                        }`}
+                        style={{
+                            fontSize: "1.2rem",
+                            fontWeight: "500",
+                            textDecoration: "none",
+                            borderRadius: 0,
+                        }}
+                    >
+                        Preview
+                    </button>
+                </div>
+            )}
+
+            <h2>{isFaculty ? "Quiz Details" : (quizState?.name || quiz?.name || "Quiz")}</h2>
 
             {isFaculty ? (
                 // ================== YOUR STYLIZED EDITOR ==================
@@ -1177,7 +1198,6 @@ export default function QuizDetails() {
             ) : (
                 // ================== STUDENT VIEW WITH QUIZ-TAKING ==================
                 <div style={{ backgroundColor: "#fff", minHeight: "100vh" }}>
-                    <h2 className="mb-3">{quizState.name || quiz?.name || "Quiz"}</h2>
 
                     {isSubmitted && submissionResult ? (
                         <>
@@ -2232,7 +2252,7 @@ export default function QuizDetails() {
                                                         }}
                                                     >
                                                         <strong>Retakes Left:</strong>{" "}
-                                                        {remainingAttempts}
+                                                        {remainingAttempts - 1}
                                                     </p>
                                                 </div>
                                             )}
