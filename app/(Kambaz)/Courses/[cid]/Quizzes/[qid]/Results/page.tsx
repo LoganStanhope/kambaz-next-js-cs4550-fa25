@@ -47,6 +47,7 @@ export default function QuizResults() {
     const [attempt, setAttempt] = useState<Attempt | null>(null);
     const [loading, setLoading] = useState(true);
     const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
+    // @ts-expect-error complaining about id but object accessing is ok
     const studentId = currentUser?._id;
 
     useEffect(() => {
