@@ -33,12 +33,17 @@ export default function Quizzes() {
         if (!cid) return;
         fetchQuizzes(cid)
             .then(async (fetchedQuizzes) => {
-                setQuizzes(fetchedQuizzes);
+                // Filter out unpublished quizzes for students
+                const filteredQuizzes = isFaculty 
+                    ? fetchedQuizzes 
+                    : fetchedQuizzes.filter((q: any) => q.published === true);
+                
+                setQuizzes(filteredQuizzes);
                 
                 // For students, fetch attempt counts for each quiz
                 if (!isFaculty && currentUserId) {
                     const counts: Record<string, number> = {};
-                    for (const quiz of fetchedQuizzes) {
+                    for (const quiz of filteredQuizzes) {
                         try {
                             const result = await getStudentAttemptCount(cid as string, quiz._id, currentUserId);
                             // The API returns { count: number }, extract the count

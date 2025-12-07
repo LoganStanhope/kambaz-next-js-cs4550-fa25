@@ -300,6 +300,21 @@ export default function QuizDetails() {
     );
   }
 
+  // Block students from accessing unpublished quizzes
+  if (!isFaculty && quiz && quiz.published === false) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{minHeight: '400px'}}>
+        <div className="text-center">
+          <h3>Quiz Not Available</h3>
+          <p className="mt-3">This quiz is not published and is not available for students.</p>
+          <Button variant="primary" onClick={() => router.push(`/Courses/${cid}/Quizzes`)}>
+            Back to Quizzes
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const handleSave = async () => {
     // Build the updated quiz object, ensuring all fields are explicitly included
     const updatedQuiz: any = {
