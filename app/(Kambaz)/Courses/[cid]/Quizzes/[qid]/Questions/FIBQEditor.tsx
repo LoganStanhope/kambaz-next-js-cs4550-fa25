@@ -17,26 +17,20 @@ interface FIBQEditorProps {
 }
 
 export default function FIBQEditor({ question, onUpdate }: FIBQEditorProps) {
-  // Structure: [{blankId: "uuid", possibleAnswers: ["answer1", "answer2"]}, ...]
-  // For backward compatibility, handle old format (string or array of strings)
   const getBlanks = () => {
     if (!question.correctAnswer) {
       return [{ blankId: uuidv4(), possibleAnswers: [""] }];
     }
     if (typeof question.correctAnswer === "string") {
-      // Old format: single string
       return [{ blankId: uuidv4(), possibleAnswers: [question.correctAnswer] }];
     }
     if (Array.isArray(question.correctAnswer)) {
       if (question.correctAnswer.length === 0) {
         return [{ blankId: uuidv4(), possibleAnswers: [""] }];
       }
-      // Check if it's array of strings (old format) or array of objects (new format)
       if (typeof question.correctAnswer[0] === "string") {
-        // Old format: array of strings (single blank, multiple answers)
         return [{ blankId: uuidv4(), possibleAnswers: question.correctAnswer }];
       }
-      // New format: array of objects
       return question.correctAnswer;
     }
     return [{ blankId: uuidv4(), possibleAnswers: [""] }];
