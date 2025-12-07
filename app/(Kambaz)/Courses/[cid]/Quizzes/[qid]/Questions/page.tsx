@@ -182,14 +182,14 @@ export default function QuizQuestionsPage() {
         <button
           onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}`)}
           className={`btn btn-link p-0 ${
-            !pathname.includes("Questions") ? "text-danger" : "text-secondary"
+            !pathname.includes("Questions") && !pathname.includes("Preview") ? "text-danger" : "text-secondary"
           }`}
           style={{
             fontSize: "1.2rem",
             fontWeight: "500",
             textDecoration: "none",
             borderRadius: 0,
-            borderBottom: !pathname.includes("Questions")
+            borderBottom: !pathname.includes("Questions") && !pathname.includes("Preview")
               ? "3px solid #dc3545"
               : "none",
           }}
@@ -216,6 +216,28 @@ export default function QuizQuestionsPage() {
         >
           Questions
         </button>
+
+        {isFacultyOrAdmin && (
+          <button
+            onClick={() =>
+              router.push(`/Courses/${cid}/Quizzes/${qid}/Preview`)
+            }
+            className={`btn btn-link p-0 ${
+              pathname.includes("Preview") ? "text-danger" : "text-secondary"
+            }`}
+            style={{
+              fontSize: "1.2rem",
+              fontWeight: "500",
+              textDecoration: "none",
+              borderRadius: 0,
+              borderBottom: pathname.includes("Preview")
+                ? "3px solid #dc3545"
+                : "none",
+            }}
+          >
+            Preview
+          </button>
+        )}
 
         {/* Points Top-Right - Show quiz points from Details */}
         <div className="ms-auto fw-bold">

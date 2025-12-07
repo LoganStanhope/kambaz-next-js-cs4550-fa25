@@ -1,7 +1,7 @@
 'use client';
 import React, {useEffect, useState} from "react";
 import {Button, Card, Form, Alert, ListGroup, ListGroupItem} from "react-bootstrap";
-import {useParams, useRouter} from "next/navigation";
+import {useParams, useRouter, usePathname} from "next/navigation";
 import {useSelector} from "react-redux";
 import {RootState} from "@/app/(Kambaz)/store";
 import {fetchQuiz} from "../../../../../Courses/client";
@@ -30,11 +30,13 @@ interface Quiz {
     questions: Question[];
     points: number;
     num_questions: number;
+    description?: string;
 }
 
 export default function QuizPreview() {
     const {cid, qid} = useParams();
     const router = useRouter();
+    const pathname = usePathname();
     const [quiz, setQuiz] = useState<Quiz | null>(null);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({});
@@ -49,6 +51,8 @@ export default function QuizPreview() {
         if (!cid || !qid) return;
         fetchQuiz(cid, qid)
             .then((fetchedQuiz) => {
+                console.log("Fetched quiz:", fetchedQuiz);
+                console.log("Quiz description:", fetchedQuiz.description);
                 setQuiz(fetchedQuiz);
                 // Initialize answers object
                 const initialAnswers: Record<string, any> = {};
@@ -151,6 +155,69 @@ export default function QuizPreview() {
 
     return (
         <div className="p-4" style={{backgroundColor: '#fff', minHeight: '100vh'}}>
+            {/* Quiz Tabs */}
+            <div
+                className="d-flex align-items-center border-bottom mb-3"
+                style={{ gap: "20px" }}
+            >
+                <button
+                    onClick={() => router.push(`/Courses/${cid}/Quizzes/${qid}`)}
+                    className={`btn btn-link p-0 ${
+                        !pathname.includes("Questions") && !pathname.includes("Preview")
+                            ? "text-danger active-tab"
+                            : "text-secondary"
+                    }`}
+                    style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "500",
+                        textDecoration: "none",
+                        borderRadius: 0,
+                    }}
+                >
+                    Details
+                </button>
+
+                <button
+                    onClick={() =>
+                        router.push(`/Courses/${cid}/Quizzes/${qid}/Questions`)
+                    }
+                    className={`btn btn-link p-0 ${
+                        pathname.includes("Questions")
+                            ? "text-danger active-tab"
+                            : "text-secondary"
+                    }`}
+                    style={{
+                        fontSize: "1.2rem",
+                        fontWeight: "500",
+                        textDecoration: "none",
+                        borderRadius: 0,
+                    }}
+                >
+                    Questions
+                </button>
+
+                {isFaculty && (
+                    <button
+                        onClick={() =>
+                            router.push(`/Courses/${cid}/Quizzes/${qid}/Preview`)
+                        }
+                        className={`btn btn-link p-0 ${
+                            pathname.includes("Preview")
+                                ? "text-danger active-tab"
+                                : "text-secondary"
+                        }`}
+                        style={{
+                            fontSize: "1.2rem",
+                            fontWeight: "500",
+                            textDecoration: "none",
+                            borderRadius: 0,
+                        }}
+                    >
+                        Preview
+                    </button>
+                )}
+            </div>
+
             {/* Header - Title at top left */}
             <h2 className="mb-3">{quiz.name}</h2>
 
@@ -220,7 +287,18 @@ export default function QuizPreview() {
                     <div className="col-md-9">
                         {/* Quiz Instructions heading - prominent with line underneath */}
                         <h3 className="mb-2" style={{fontSize: '1.5rem', fontWeight: '600'}}>Quiz Instructions</h3>
-                        <hr className="mb-4" style={{borderTop: '1px solid #000', margin: '0'}} />
+                        <hr className="mb-3" style={{borderTop: '1px solid #000', margin: '0'}} />
+                        
+                        {/* Display quiz description/instructions - using same method as start screen */}
+                        {quiz.description && quiz.description.trim() ? (
+                            <div className="mb-4" style={{fontSize: '1rem', lineHeight: '1.6'}}>
+                                <div className="mt-2" dangerouslySetInnerHTML={{__html: quiz.description}} />
+                            </div>
+                        ) : (
+                            <div className="mb-4" style={{fontSize: '1rem', lineHeight: '1.6', color: '#666', fontStyle: 'italic'}}>
+                                No instructions provided.
+                            </div>
+                        )}
 
                         {currentQuestion && (
                             <Card className="mb-3" style={{border: '2px solid #000', boxShadow: 'none', backgroundColor: '#fff'}}>

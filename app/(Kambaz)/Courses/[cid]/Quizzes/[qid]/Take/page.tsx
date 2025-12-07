@@ -4,7 +4,7 @@ import {Button, Card, Form, Alert, ListGroup, ListGroupItem} from "react-bootstr
 import {useParams, useRouter} from "next/navigation";
 import {useSelector} from "react-redux";
 import {RootState} from "@/app/(Kambaz)/store";
-import {fetchQuiz, submitQuizAttempt} from "../../../../../Courses/client";
+import {fetchQuiz, submitQuizAttempt, getStudentAttemptCount, canStudentTakeQuiz} from "../../../../../Courses/client";
 import {FaQuestionCircle, FaArrowRight} from "react-icons/fa";
 
 interface Choice {
@@ -34,6 +34,10 @@ interface Quiz {
     available_until?: string;
     due_date?: string;
     description?: string;
+    multipleAttempts?: string | boolean;
+    howManyAttempts?: number;
+    multiple_attempts?: string | boolean;
+    how_many_attempts?: number;
 }
 
 export default function TakeQuiz() {
@@ -48,14 +52,18 @@ export default function TakeQuiz() {
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null); // in seconds
+    const [attemptCount, setAttemptCount] = useState<number>(0);
+    const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
     const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
     // @ts-expect-error because it complains about accessing role in this way
     const studentId = currentUser?._id;
 
     useEffect(() => {
-        if (!cid || !qid) return;
+        if (!cid || !qid || !studentId) return;
         fetchQuiz(cid, qid)
-            .then((fetchedQuiz) => {
+            .then(async (fetchedQuiz) => {
+                console.log("Take Quiz - Fetched quiz:", fetchedQuiz);
+                console.log("Take Quiz - Quiz description:", fetchedQuiz.description);
                 setQuiz(fetchedQuiz);
                 // Initialize answers object
                 const initialAnswers: Record<string, any> = {};
@@ -73,9 +81,42 @@ export default function TakeQuiz() {
                 if (fetchedQuiz.timeLimit) {
                     setTimeRemaining(fetchedQuiz.timeLimit * 60); // Convert minutes to seconds
                 }
+                
+                // Fetch attempt count and calculate remaining attempts
+                try {
+                    const countRes = await getStudentAttemptCount(cid as string, qid as string, studentId);
+                    const count = typeof countRes === 'object' && countRes !== null && 'count' in countRes
+                        ? (countRes as any).count
+                        : (typeof countRes === 'number' ? countRes : 0);
+                    setAttemptCount(count);
+                    
+                    // Calculate remaining attempts
+                    const multipleAttempts = fetchedQuiz.multipleAttempts || fetchedQuiz.multiple_attempts;
+                    const howManyAttemptsRaw = fetchedQuiz.howManyAttempts || fetchedQuiz.how_many_attempts;
+                    const howManyAttempts = howManyAttemptsRaw ? Number(howManyAttemptsRaw) : null;
+                    
+                    if (multipleAttempts === 'No' || multipleAttempts === false) {
+                        // Single attempt only
+                        setRemainingAttempts(count > 0 ? 0 : 1);
+                    } else if (multipleAttempts === 'Yes' || multipleAttempts === true) {
+                        if (howManyAttempts && !isNaN(howManyAttempts) && howManyAttempts > 0) {
+                            setRemainingAttempts(Math.max(0, howManyAttempts - count));
+                        } else {
+                            // Unlimited attempts
+                            setRemainingAttempts(null);
+                        }
+                    } else {
+                        // Default: single attempt
+                        setRemainingAttempts(count > 0 ? 0 : 1);
+                    }
+                } catch (error) {
+                    console.error("Failed to get attempt count:", error);
+                    setAttemptCount(0);
+                    setRemainingAttempts(null);
+                }
             })
             .catch(err => console.error("Failed to load quiz", err));
-    }, [cid, qid]);
+    }, [cid, qid, studentId]);
 
     // Timer countdown
     useEffect(() => {
@@ -126,6 +167,12 @@ export default function TakeQuiz() {
     }, [quiz, hasStarted, isSubmitted]);
 
     const handleStart = () => {
+        // Decrease remaining attempts by 1 when quiz starts (before setting hasStarted)
+        setRemainingAttempts(prev => {
+            if (prev === null || prev === undefined) return null; // Unlimited attempts
+            const newValue = prev - 1;
+            return Math.max(0, newValue);
+        });
         setHasStarted(true);
         setStartTime(new Date());
         setLastSaved(new Date());
@@ -254,7 +301,14 @@ export default function TakeQuiz() {
             )}
 
             <h3 className="mb-2" style={{fontSize: '1.5rem', fontWeight: '600'}}>Quiz Instructions</h3>
-            <hr className="mb-4" style={{borderTop: '1px solid #000'}} />
+            <hr className="mb-3" style={{borderTop: '1px solid #000'}} />
+            
+            {/* Display quiz description/instructions - using exact same method as start screen */}
+            {quiz.description && (
+                <div className="mb-4" style={{fontSize: '1rem', lineHeight: '1.6'}}>
+                    <div className="mt-2" dangerouslySetInnerHTML={{__html: quiz.description}} />
+                </div>
+            )}
 
             {!isSubmitted ? (
                 <div className="row">
@@ -288,6 +342,17 @@ export default function TakeQuiz() {
                                 </ListGroup>
                             </Card.Body>
                         </Card>
+                        
+                        {/* Retakes Left Card */}
+                        {remainingAttempts !== null && (
+                            <Card className="mt-3">
+                                <Card.Body>
+                                    <div className="text-center">
+                                        <strong>Retakes Left: {remainingAttempts - 1} </strong>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        )}
                     </div>
 
                     {/* Main Content Area */}
