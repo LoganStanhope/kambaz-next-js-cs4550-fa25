@@ -49,6 +49,7 @@ export default function TakeQuiz() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [timeRemaining, setTimeRemaining] = useState<number | null>(null); // in seconds
     const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
+    // @ts-expect-error because it complains about accessing role in this way
     const studentId = currentUser?._id;
 
     useEffect(() => {
