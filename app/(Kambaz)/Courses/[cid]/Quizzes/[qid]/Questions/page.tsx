@@ -132,18 +132,28 @@ export default function QuizQuestionsPage() {
     
     try {
       for (const question of questions) {
+        const cleanQuestion = {
+          questionId: question.questionId,
+          type: question.type,
+          title: question.title,
+          points: question.points,
+          questionHtml: question.questionHtml,
+          choices: question.choices,
+          correctAnswer: question.correctAnswer,
+        };
+
         if (question._id) {
           await updateQuestion(
             cid as string,
             qid as string,
             question.questionId,
-            question
+            cleanQuestion
           );
         } else {
           const savedQuestion = await createQuestion(
             cid as string,
             qid as string,
-            question
+            cleanQuestion
           );
 
           const updated = [...questions];
@@ -164,10 +174,11 @@ export default function QuizQuestionsPage() {
       setModalTitle("Quiz Saved");
       setModalMessage("Your quiz has been saved successfully.");
       setShowSavedModal(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to save quiz:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Unknown error";
       setModalTitle("Error");
-      setModalMessage("Failed to save quiz. Please try again.");
+      setModalMessage(`Failed to save quiz: ${errorMessage}. Please try again.`);
       setShowSavedModal(true);
     }
   };
